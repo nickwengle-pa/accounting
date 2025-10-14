@@ -1,0 +1,1210 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: Completing the Accounting Cycle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background-color: #1c2526;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #1a5276;
+            text-align: center;
+        }
+        body.dark-mode h1 {
+            color: #66b2ff;
+        }
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 5px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body.dark-mode .tab {
+            background-color: #2c3e50;
+        }
+        .tab:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(10px);
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        h2, h3 {
+            color: #2c3e50;
+        }
+        body.dark-mode h2, body.dark-mode h3 {
+            color: #66b2ff;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        body.dark-mode th, body.dark-mode td {
+            border-color: #555;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        body.dark-mode th {
+            background-color: #2c3e50;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        body.dark-mode tr:nth-child(even) {
+            background-color: #2a3b4c;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .example {
+            font-style: italic;
+            color: #555;
+        }
+        body.dark-mode .example {
+            color: #aaa;
+        }
+        .highlight {
+            background-color: #ffeb3b;
+        }
+        #search-bar {
+            margin: 20px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 400px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #clear-search {
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #clear-search:hover {
+            background-color: #c0392b;
+        }
+        #dark-mode-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #dark-mode-toggle:hover {
+            background-color: #2980b9;
+        }
+        .mc-option {
+            margin: 5px 0;
+        }
+        .mc-option input {
+            margin-right: 10px;
+        }
+        .mc-feedback {
+            display: none;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        .correct {
+            color: #2ecc71;
+        }
+        .incorrect {
+            color: #e74c3c;
+        }
+        @media (max-width: 600px) {
+            body {
+                margin: 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+            #search-bar, #clear-search {
+                width: 100%;
+                box-sizing: border-box;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            #clear-search {
+                margin-top: 10px;
+            }
+            #dark-mode-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="dark-mode-toggle">Toggle Dark Mode</button>
+    <input type="text" id="search-bar" placeholder="Search content...">
+    <button id="clear-search">Clear Search</button>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="summary">Summary</div>
+        <div class="tab" data-tab="multiple-choice">Multiple Choice</div>
+        <div class="tab" data-tab="short-answer">Short Answer</div>
+        <div class="tab" data-tab="exercise-set-a">Exercise Set A</div>
+        <div class="tab" data-tab="exercise-set-b">Exercise Set B</div>
+        <div class="tab" data-tab="problem-set-a">Problem Set A</div>
+        <div class="tab" data-tab="problem-set-b">Problem Set B</div>
+        <div class="tab" data-tab="thought-provokers">Thought Provokers</div>
+    </div>
+
+    <h1>Chapter 4: Completing the Accounting Cycle - Summary and End-of-Chapter Materials</h1>
+
+    <div id="summary" class="tab-content active">
+        <h2>Summary for a 4th Grader</h2>
+        <p>Imagine you run a lemonade stand. You sell drinks, buy lemons, and rent a table. At month's end, you check how much money you made. But it's tricky! If you buy lemons for two months but use only half now, don't count all the cost this month—that makes it look like you lost money when you didn't.</p>
+        <p>Or, if a friend owes you $10 for lemonade you gave today but pays tomorrow, count it as money made <em>now</em>.</p>
+        <p>This chapter is about <strong>fixing your money records</strong> (called accounting) to show the true story. Key ideas:</p>
+        <ul>
+            <li><strong>Accrual basis</strong>: Count money when it's earned or spent, not when cash moves.</li>
+            <li><strong>Deferrals</strong>: Paid or got paid early (e.g., prepaid rent or advance payment for work not done).</li>
+            <li><strong>Accruals</strong>: Earned or owed something, but no cash yet (e.g., unpaid wages or money owed to you).</li>
+            <li><strong>Depreciation</strong>: Stuff like your cart wears out, so spread the cost over time.</li>
+        </ul>
+        <p>Steps: Make <strong>adjusting entries</strong> to fix records, create an <strong>adjusted trial balance</strong> to check, prepare <strong>financial statements</strong> (like income reports), and do <strong>closing entries</strong> to reset for next month.</p>
+        <p>This helps see if your stand is really succeeding!</p>
+    </div>
+
+    <div id="multiple-choice" class="tab-content">
+        <h2>Multiple Choice Questions</h2>
+        <h3>1. LO 4.1 Which of the following is any reporting period shorter than a full year (fiscal or calendar) and can encompass monthly, quarterly, or half-year statements?</h3>
+        <div class="mc-option"><input type="radio" name="q1" value="A"> A) fiscal year</div>
+        <div class="mc-option"><input type="radio" name="q1" value="B"> <strong>B) interim period</strong></div>
+        <div class="mc-option"><input type="radio" name="q1" value="C"> C) calendar year</div>
+        <div class="mc-option"><input type="radio" name="q1" value="D"> D) fixed year</div>
+        <p><strong>Answer: B) interim period</strong></p>
+        <p class="example">Real-world example: A company like Walmart prepares quarterly financial reports for investors, covering three months, which is an interim period.</p>
+        <p class="mc-feedback" id="feedback-q1"></p>
+
+        <h3>2. LO 4.1 Which of the following is the federal, independent agency that provides oversight of public companies to maintain fair representation of company financial activities for investors to make informed decisions?</h3>
+        <div class="mc-option"><input type="radio" name="q2" value="A"> A) IRS (Internal Revenue Service)</div>
+        <div class="mc-option"><input type="radio" name="q2" value="B"> <strong>B) SEC (Securities and Exchange Commission)</strong></div>
+        <div class="mc-option"><input type="radio" name="q2" value="C"> C) FASB (Financial Accounting Standards Board)</div>
+        <div class="mc-option"><input type="radio" name="q2" value="D"> D) FDIC (Federal Deposit Insurance Corporation)</div>
+        <p><strong>Answer: B) SEC (Securities and Exchange Commission)</strong></p>
+        <p class="example">Real-world example: The SEC reviews Tesla’s financial statements to ensure they are accurate for shareholders.</p>
+        <p class="mc-feedback" id="feedback-q2"></p>
+
+        <h3>3. LO 4.1 Revenues and expenses must be recorded in the accounting period in which they were earned or incurred, no matter when cash receipts or outlays occur under which of the following accounting methods?</h3>
+        <div class="mc-option"><input type="radio" name="q3" value="A"> <strong>A) accrual basis accounting</strong></div>
+        <div class="mc-option"><input type="radio" name="q3" value="B"> B) cash basis accounting</div>
+        <div class="mc-option"><input type="radio" name="q3" value="C"> C) tax basis accounting</div>
+        <div class="mc-option"><input type="radio" name="q3" value="D"> D) revenue basis accounting</div>
+        <p><strong>Answer: A) accrual basis accounting</strong></p>
+        <p class="example">Real-world example: A landscaping company records revenue when it mows a lawn in December, even if the client pays in January.</p>
+        <p class="mc-feedback" id="feedback-q3"></p>
+
+        <h3>4. LO 4.1 Which of the following breaks down company financial information into specific time spans, and can cover a month, quarter, half-year, or full year?</h3>
+        <div class="mc-option"><input type="radio" name="q4" value="A"> <strong>A) accounting period</strong></div>
+        <div class="mc-option"><input type="radio" name="q4" value="B"> B) yearly period</div>
+        <div class="mc-option"><input type="radio" name="q4" value="C"> C) monthly period</div>
+        <div class="mc-option"><input type="radio" name="q4" value="D"> D) fiscal period</div>
+        <p><strong>Answer: A) accounting period</strong></p>
+        <p class="example">Real-world example: A small bakery tracks its sales and expenses monthly to see how it’s doing each period.</p>
+        <p class="mc-feedback" id="feedback-q4"></p>
+
+        <h3>5. LO 4.1 Which of the following is a twelve-month reporting cycle that can begin in any month, except January 1, and records financial data for that twelve-month consecutive period?</h3>
+        <div class="mc-option"><input type="radio" name="q5" value="A"> A) fixed year</div>
+        <div class="mc-option"><input type="radio" name="q5" value="B"> B) interim period</div>
+        <div class="mc-option"><input type="radio" name="q5" value="C"> C) calendar year</div>
+        <div class="mc-option"><input type="radio" name="q5" value="D"> <strong>D) fiscal year</strong></div>
+        <p><strong>Answer: D) fiscal year</strong></p>
+        <p class="example">Real-world example: Apple’s fiscal year runs from October to September, covering 12 months for its financial reports.</p>
+        <p class="mc-feedback" id="feedback-q5"></p>
+
+        <h3>6. LO 4.2 Which type of adjustment occurs when cash is either collected or paid, but the related income or expense is not reportable in the current period?</h3>
+        <div class="mc-option"><input type="radio" name="q6" value="A"> A) accrual</div>
+        <div class="mc-option"><input type="radio" name="q6" value="B"> <strong>B) deferral</strong></div>
+        <div class="mc-option"><input type="radio" name="q6" value="C"> C) estimate</div>
+        <div class="mc-option"><input type="radio" name="q6" value="D"> D) cull</div>
+        <p><strong>Answer: B) deferral</strong></p>
+        <p class="example">Real-world example: A gym collects a yearly membership fee upfront but records the revenue monthly as the service is provided.</p>
+        <p class="mc-feedback" id="feedback-q6"></p>
+
+        <h3>7. LO 4.2 Which type of adjustment occurs when cash is not collected or paid, but the related income or expense is reportable in the current period?</h3>
+        <div class="mc-option"><input type="radio" name="q7" value="A"> <strong>A) accrual</strong></div>
+        <div class="mc-option"><input type="radio" name="q7" value="B"> B) deferral</div>
+        <div class="mc-option"><input type="radio" name="q7" value="C"> C) estimate</div>
+        <div class="mc-option"><input type="radio" name="q7" value="D"> D) cull</div>
+        <p><strong>Answer: A) accrual</strong></p>
+        <p class="example">Real-world example: A consulting firm records revenue for work done in December, even though the client will pay in January.</p>
+        <p class="mc-feedback" id="feedback-q7"></p>
+
+        <h3>8. LO 4.2 If an adjustment includes an entry to a payable or receivable account, which type of adjustment is it?</h3>
+        <div class="mc-option"><input type="radio" name="q8" value="A"> <strong>A) accrual</strong></div>
+        <div class="mc-option"><input type="radio" name="q8" value="B"> B) deferral</div>
+        <div class="mc-option"><input type="radio" name="q8" value="C"> C) estimate</div>
+        <div class="mc-option"><input type="radio" name="q8" value="D"> D) cull</div>
+        <p><strong>Answer: A) accrual</strong></p>
+        <p class="example">Real-world example: A company records salaries payable for employees’ work in December, to be paid in January.</p>
+        <p class="mc-feedback" id="feedback-q8"></p>
+
+        <h3>9. LO 4.2 If an adjustment includes an entry to Accumulated Depreciation, which type of adjustment is it?</h3>
+        <div class="mc-option"><input type="radio" name="q9" value="A"> A) accrual</div>
+        <div class="mc-option"><input type="radio" name="q9" value="B"> B) deferral</div>
+        <div class="mc-option"><input type="radio" name="q9" value="C"> <strong>C) estimate</strong></div>
+        <div class="mc-option"><input type="radio" name="q9" value="D"> D) cull</div>
+        <p><strong>Answer: C) estimate</strong></p>
+        <p class="example">Real-world example: A delivery company records depreciation for its trucks, estimating their value loss over time.</p>
+        <p class="mc-feedback" id="feedback-q9"></p>
+
+        <h3>10. LO 4.2 Rent collected in advance is an example of which of the following?</h3>
+        <div class="mc-option"><input type="radio" name="q10" value="A"> A) accrued expense</div>
+        <div class="mc-option"><input type="radio" name="q10" value="B"> B) accrued revenue</div>
+        <div class="mc-option"><input type="radio" name="q10" value="C"> C) deferred expense (prepaid expense)</div>
+        <div class="mc-option"><input type="radio" name="q10" value="D"> <strong>D) deferred revenue (unearned revenue)</strong></div>
+        <p><strong>Answer: D) deferred revenue (unearned revenue)</strong></p>
+        <p class="example">Real-world example: A landlord collects six months’ rent upfront but recognizes it as revenue each month as the tenant uses the property.</p>
+        <p class="mc-feedback" id="feedback-q10"></p>
+
+        <h3>11. LO 4.2 Rent paid in advance is an example of which of the following?</h3>
+        <div class="mc-option"><input type="radio" name="q11" value="A"> A) accrued expense</div>
+        <div class="mc-option"><input type="radio" name="q11" value="B"> B) accrued revenue</div>
+        <div class="mc-option"><input type="radio" name="q11" value="C"> <strong>C) deferred expense (prepaid expense)</strong></div>
+        <div class="mc-option"><input type="radio" name="q11" value="D"> D) deferred revenue (unearned revenue)</div>
+        <p><strong>Answer: C) deferred expense (prepaid expense)</strong></p>
+        <p class="example">Real-world example: A business pays a year’s rent in advance and expenses it monthly as the space is used.</p>
+        <p class="mc-feedback" id="feedback-q11"></p>
+
+        <h3>12. LO 4.2 Salaries owed but not yet paid is an example of which of the following?</h3>
+        <div class="mc-option"><input type="radio" name="q12" value="A"> <strong>A) accrued expense</strong></div>
+        <div class="mc-option"><input type="radio" name="q12" value="B"> B) accrued revenue</div>
+        <div class="mc-option"><input type="radio" name="q12" value="C"> C) deferred expense (prepaid expense)</div>
+        <div class="mc-option"><input type="radio" name="q12" value="D"> D) deferred revenue (unearned revenue)</div>
+        <p><strong>Answer: A) accrued expense</strong></p>
+        <p class="example">Real-world example: A store owes its employees for the last week of December but will pay them in January.</p>
+        <p class="mc-feedback" id="feedback-q12"></p>
+
+        <h3>13. LO 4.2 Revenue earned but not yet collected is an example of which of the following?</h3>
+        <div class="mc-option"><input type="radio" name="q13" value="A"> A) accrued expense</div>
+        <div class="mc-option"><input type="radio" name="q13" value="B"> <strong>B) accrued revenue</strong></div>
+        <div class="mc-option"><input type="radio" name="q13" value="C"> C) deferred expense (prepaid expense)</div>
+        <div class="mc-option"><input type="radio" name="q13" value="D"> D) deferred revenue (unearned revenue)</div>
+        <p><strong>Answer: B) accrued revenue</strong></p>
+        <p class="example">Real-world example: A graphic designer completes a project in December but waits for the client’s payment in January.</p>
+        <p class="mc-feedback" id="feedback-q13"></p>
+
+        <h3>14. LO 4.3 What adjusting journal entry is needed to record depreciation expense for the period?</h3>
+        <div class="mc-option"><input type="radio" name="q14" value="A"> A) a debit to Depreciation Expense; a credit to Cash</div>
+        <div class="mc-option"><input type="radio" name="q14" value="B"> B) a debit to Accumulated Depreciation; a credit to Depreciation Expense</div>
+        <div class="mc-option"><input type="radio" name="q14" value="C"> <strong>C) a debit to Depreciation Expense; a credit to Accumulated Depreciation</strong></div>
+        <div class="mc-option"><input type="radio" name="q14" value="D"> D) a debit to Accumulated Depreciation; a credit to Cash</div>
+        <p><strong>Answer: C) a debit to Depreciation Expense; a credit to Accumulated Depreciation</strong></p>
+        <p class="example">Real-world example: A restaurant records monthly depreciation for its kitchen equipment to reflect wear and tear.</p>
+        <p class="mc-feedback" id="feedback-q14"></p>
+
+        <h3>15. LO 4.3 Which of these transactions requires an adjusting entry (debit) to Unearned Revenue?</h3>
+        <div class="mc-option"><input type="radio" name="q15" value="A"> A) revenue earned but not yet collected</div>
+        <div class="mc-option"><input type="radio" name="q15" value="B"> B) revenue collected but not yet earned</div>
+        <div class="mc-option"><input type="radio" name="q15" value="C"> C) revenue earned before being collected, when it is later collected</div>
+        <div class="mc-option"><input type="radio" name="q15" value="D"> <strong>D) revenue collected before being earned, when it is later earned</strong></div>
+        <p><strong>Answer: D) revenue collected before being earned, when it is later earned</strong></p>
+        <p class="example">Real-world example: A magazine subscription service collects payment upfront and debits Unearned Revenue when issues are delivered monthly.</p>
+        <p class="mc-feedback" id="feedback-q15"></p>
+
+        <h3>16. LO 4.4 What critical purpose does the adjusted trial balance serve?</h3>
+        <div class="mc-option"><input type="radio" name="q16" value="A"> A) It proves that transactions have been posted correctly</div>
+        <div class="mc-option"><input type="radio" name="q16" value="B"> <strong>B) It is the source document from which to prepare the financial statements</strong></div>
+        <div class="mc-option"><input type="radio" name="q16" value="C"> C) It shows the beginning balances of every account, to be used to start the new year’s records</div>
+        <div class="mc-option"><input type="radio" name="q16" value="D"> D) It proves that all journal entries have been made correctly</div>
+        <p><strong>Answer: B) It is the source document from which to prepare the financial statements</strong></p>
+        <p class="example">Real-world example: A retailer uses the adjusted trial balance to create its income statement showing sales and expenses.</p>
+        <p class="mc-feedback" id="feedback-q16"></p>
+
+        <h3>17. LO 4.4 Which of the following accounts’ balance would be a different number on the Balance Sheet than it is on the adjusted trial balance?</h3>
+        <div class="mc-option"><input type="radio" name="q17" value="A"> A) accumulated depreciation</div>
+        <div class="mc-option"><input type="radio" name="q17" value="B"> B) unearned service revenue</div>
+        <div class="mc-option"><input type="radio" name="q17" value="C"> <strong>C) retained earnings</strong></div>
+        <div class="mc-option"><input type="radio" name="q17" value="D"> D) dividends</div>
+        <p><strong>Answer: C) retained earnings</strong></p>
+        <p class="example">Real-world example: A company’s retained earnings on the balance sheet may reflect post-closing adjustments, differing from the trial balance.</p>
+        <p class="mc-feedback" id="feedback-q17"></p>
+
+        <h3>18. LO 4.5 On which financial statement would the Supplies account appear?</h3>
+        <div class="mc-option"><input type="radio" name="q18" value="A"> <strong>A) Balance Sheet</strong></div>
+        <div class="mc-option"><input type="radio" name="q18" value="B"> B) Income Statement</div>
+        <div class="mc-option"><input type="radio" name="q18" value="C"> C) Retained Earnings Statement</div>
+        <div class="mc-option"><input type="radio" name="q18" value="D"> D) Statement of Cash Flows</div>
+        <p><strong>Answer: A) Balance Sheet</strong></p>
+        <p class="example">Real-world example: A print shop lists its paper and ink supplies as assets on its balance sheet.</p>
+        <p class="mc-feedback" id="feedback-q18"></p>
+
+        <h3>19. LO 4.5 On which financial statement would the Dividends account appear?</h3>
+        <div class="mc-option"><input type="radio" name="q19" value="A"> A) Balance Sheet</div>
+        <div class="mc-option"><input type="radio" name="q19" value="B"> B) Income Statement</div>
+        <div class="mc-option"><input type="radio" name="q19" value="C"> <strong>C) Retained Earnings Statement</strong></div>
+        <div class="mc-option"><input type="radio" name="q19" value="D"> D) Statement of Cash Flows</div>
+        <p><strong>Answer: C) Retained Earnings Statement</strong></p>
+        <p class="example">Real-world example: A corporation reports dividends paid to shareholders in its retained earnings statement.</p>
+        <p class="mc-feedback" id="feedback-q19"></p>
+
+        <h3>20. LO 4.5 On which financial statement would the Accumulated Depreciation account appear?</h3>
+        <div class="mc-option"><input type="radio" name="q20" value="A"> <strong>A) Balance Sheet</strong></div>
+        <div class="mc-option"><input type="radio" name="q20" value="B"> B) Income Statement</div>
+        <div class="mc-option"><input type="radio" name="q20" value="C"> C) Retained Earnings Statement</div>
+        <div class="mc-option"><input type="radio" name="q20" value="D"> D) Statement of Cash Flows</div>
+        <p><strong>Answer: A) Balance Sheet</strong></p>
+        <p class="example">Real-world example: A trucking company shows accumulated depreciation for its fleet on the balance sheet to reduce asset value.</p>
+        <p class="mc-feedback" id="feedback-q20"></p>
+
+        <h3>21. LO 4.5 On which two financial statements would the Retained Earnings account appear?</h3>
+        <div class="mc-option"><input type="radio" name="q21" value="A"> <strong>A) Balance Sheet</strong></div>
+        <div class="mc-option"><input type="radio" name="q21" value="B"> B) Income Statement</div>
+        <div class="mc-option"><input type="radio" name="q21" value="C"> <strong>C) Retained Earnings Statement</strong></div>
+        <div class="mc-option"><input type="radio" name="q21" value="D"> D) Statement of Cash Flows</div>
+        <p><strong>Answer: A) Balance Sheet and C) Retained Earnings Statement</strong></p>
+        <p class="example">Real-world example: A tech startup shows retained earnings on both its balance sheet (equity section) and retained earnings statement (detailing changes).</p>
+        <p class="mc-feedback" id="feedback-q21"></p>
+    </div>
+
+    <div id="short-answer" class="tab-content">
+        <h2>Short Answer Questions</h2>
+        <h3>1. LO 4.1 Describe the revenue recognition principle. Give specifics.</h3>
+        <p>The revenue recognition principle requires that revenue be reported when it is earned, regardless of when cash is received. For example, if a company provides services in December but the customer pays in January, the revenue is recognized in December when the services were performed.</p>
+
+        <h3>2. LO 4.1 Describe the expense recognition principle (matching principle). Give specifics.</h3>
+        <p>The expense recognition principle, or matching principle, requires that expenses be reported in the same period as the revenues they help generate. For example, if inventory is sold in a period, the cost of that inventory (an expense) should be recorded in the same period as the sale revenue, even if the inventory was purchased earlier.</p>
+
+        <h3>3. LO 4.2 What parts of the accounting cycle require analytical processes, rather than methodical processes? Explain.</h3>
+        <p>Analyzing transactions to determine journal entries requires analytical processes, as it involves deciding which accounts are affected and whether they are debits or credits. This applies to both initial entries and adjusting entries. Other steps, like posting to ledgers, preparing trial balances, and closing entries, are more methodical and rule-based.</p>
+
+        <h3>4. LO 4.2 Why is the adjusting process needed?</h3>
+        <p>The adjusting process is needed to ensure that financial statements reflect the correct revenues and expenses for the period under accrual accounting. It updates accounts for accruals and deferrals so that the statements comply with the revenue recognition and matching principles, providing a true picture of financial performance and position.</p>
+
+        <h3>5. LO 4.2 Name two types of adjusting journal entries that are commonly made before preparing financial statements? Explain, with examples.</h3>
+        <p>Two types are accruals and deferrals. Accruals record revenues or expenses that have occurred but not yet been recorded, like accruing salaries payable for work done but not paid (debit Salaries Expense, credit Salaries Payable). Deferrals adjust for payments or receipts in advance, like adjusting prepaid insurance for the portion used (debit Insurance Expense, credit Prepaid Insurance).</p>
+
+        <h3>6. LO 4.2 Are there any accounts that would never have an adjusting entry? Explain.</h3>
+        <p>Accounts like Cash typically do not have adjusting entries because cash transactions are recorded when they occur, and there are no timing differences to adjust. Equity accounts like Common Stock also rarely need adjustments unless there's a specific error or reclassification.</p>
+
+        <h3>7. LO 4.2 Why do adjusting entries always include both balance sheet and income statement accounts?</h3>
+        <p>Adjusting entries shift amounts between balance sheet accounts (like assets or liabilities) and income statement accounts (like revenues or expenses) to properly match timing under accrual accounting. For example, accruing an expense increases a liability (balance sheet) and an expense (income statement).</p>
+
+        <h3>8. LO 4.2 Why are adjusting journal entries needed?</h3>
+        <p>Adjusting journal entries are needed to update account balances for events that have occurred but not yet been recorded, ensuring financial statements are accurate and comply with accrual basis principles. Without them, revenues and expenses might be mismatched across periods.</p>
+
+        <h3>9. LO 4.3 If the Supplies account had an ending balance of $1,200 and the actual count for the remaining supplies was $400 at the end of the period, what adjustment would be needed?</h3>
+        <p>Debit Supplies Expense $800; Credit Supplies $800. This adjusts the Supplies account to the actual $400 remaining, recognizing the $800 used as an expense.</p>
+
+        <h3>10. LO 4.3 When a company collects cash from customers before performing the contracted service, what is the impact, and how should it be recorded?</h3>
+        <p>The impact is an increase in cash (asset) and unearned revenue (liability). Record as: Debit Cash; Credit Unearned Revenue. Later, when services are performed, adjust by Debit Unearned Revenue; Credit Service Revenue.</p>
+
+        <h3>11. LO 4.3 If the Prepaid Insurance account had a balance of $12,000, representing one year’s policy premium, which was paid on July 1, what entry would be needed to adjust the Prepaid Insurance account at the end of December, before preparing the financial statements?</h3>
+        <p>From July 1 to December 31 is 6 months, so half the policy ($6,000) has expired. Debit Insurance Expense $6,000; Credit Prepaid Insurance $6,000.</p>
+
+        <h3>12. LO 4.3 If adjusting entries include these listed accounts, what other account must be in that entry as well? (A) Depreciation expense; (B) Unearned Service Revenue; (C) Prepaid Insurance; (D) Interest Payable.</h3>
+        <p>(A) Accumulated Depreciation; (B) Service Revenue; (C) Insurance Expense; (D) Interest Expense.</p>
+
+        <h3>13. LO 4.4 What is the difference between the trial balance and the adjusted trial balance?</h3>
+        <p>The trial balance is prepared before adjustments and lists unadjusted account balances to check if debits equal credits. The adjusted trial balance is prepared after posting adjusting entries and reflects corrected balances used for financial statements.</p>
+
+        <h3>14. LO 4.4 Why is the adjusted trial balance trusted as a reliable source for building the financial statements?</h3>
+        <p>It incorporates all adjustments for accruals, deferrals, and estimates, ensuring balances align with accrual accounting principles. Debits equal credits, and it directly feeds into the income statement, retained earnings statement, and balance sheet.</p>
+
+        <h3>15. LO 4.5 Indicate on which financial statement the following accounts (from the adjusted trial balance) would appear: (A) Sales Revenue; (B) Unearned Rent Revenue; (C) Prepaid Advertising; (D) Advertising Expense; (E) Dividends; (F) Cash.</h3>
+        <p>(A) Income Statement; (B) Balance Sheet; (C) Balance Sheet; (D) Income Statement; (E) Retained Earnings Statement; (F) Balance Sheet.</p>
+    </div>
+
+    <div id="exercise-set-a" class="tab-content">
+        <h2>Exercise Set A</h2>
+        <h3>EA1. LO 4.2 Identify whether each of the following transactions, which are related to revenue recognition, are accrual, deferral, or neither.</h3>
+        <ul>
+            <li>a) sold goods to customers on credit → Accrual (revenue earned, cash later)</li>
+            <li>b) collected cash from customer accounts → Neither (just collecting on accrual)</li>
+            <li>c) sold goods to customers for cash → Neither (cash and revenue same time)</li>
+            <li>d) collected cash in advance for goods to be delivered later → Deferral (cash now, revenue later)</li>
+        </ul>
+
+        <h3>EA2. LO 4.2 Identify whether each of the following transactions, which are related to expense recognition, are accrual, deferral, or neither.</h3>
+        <ul>
+            <li>a) paid an expense for the current month → Neither (cash and expense same time)</li>
+            <li>b) prepaid an expense for future months → Deferral (cash now, expense later)</li>
+            <li>c) made a payment to reduce accounts payable → Neither (paying on accrual)</li>
+            <li>d) incurred a current-month expense, to be paid next month → Accrual (expense now, cash later)</li>
+        </ul>
+
+        <h3>EA3. LO 4.2 Identify which type of adjustment is indicated by these transactions. Choose accrued revenue, accrued expense, deferred revenue, or deferred expense.</h3>
+        <ul>
+            <li>a) rent paid in advance for use of property → Deferred expense</li>
+            <li>b) cash received in advance for future services → Deferred revenue</li>
+            <li>c) supplies inventory purchased → Deferred expense</li>
+            <li>d) fees earned but not yet collected → Accrued revenue</li>
+        </ul>
+
+        <h3>EA4. LO 4.2 The following accounts were used to make year-end adjustments. Identify the related account that is associated with this account (the other account in the adjusting entry).</h3>
+        <ul>
+            <li>a) Salaries Payable → Salaries Expense</li>
+            <li>b) Depreciation Expense → Accumulated Depreciation</li>
+            <li>c) Supplies → Supplies Expense</li>
+            <li>d) Unearned Rent → Rent Revenue</li>
+        </ul>
+
+        <h3>EA5. LO 4.2 and LO 4.3 Reviewing insurance policies revealed that a single policy was purchased on August 1, for one year’s coverage, in the amount of $6,000. There was no previous balance in the Prepaid Insurance account at that time. Based on the information provided:</h3>
+        <ul>
+            <li>a) Make the December 31 adjusting journal entry to bring the balances to correct. → From August 1 to December 31 is 5 months. Monthly expense = $6,000 / 12 = $500. Expense for period = $2,500. Debit Insurance Expense $2,500; Credit Prepaid Insurance $2,500.</li>
+            <li>b) Show the impact that these transactions had. → Decreases assets (Prepaid Insurance) by $2,500 and increases expenses by $2,500, reducing net income and equity.</li>
+        </ul>
+
+        <h3>EA6. LO 4.3 On July 1, a client paid an advance payment (retainer) of $5,000 to cover future legal services. During the period, the company completed $3,500 of the agreed-on services for the client. There was no beginning balance in the Unearned Revenue account for the period. Based on the information provided:</h3>
+        <ul>
+            <li>a) Make the December 31 adjusting journal entry to bring the balances to correct. → Debit Unearned Revenue $3,500; Credit Service Revenue $3,500.</li>
+            <li>b) Show the impact that these transactions had. → Decreases liabilities (Unearned Revenue) by $3,500 and increases revenue by $3,500, increasing net income and equity.</li>
+        </ul>
+
+        <h3>EA7. LO 4.3 Reviewing payroll records indicates that employee salaries that are due to be paid on January 3 include $3,575 in wages for the last week of December. There was no previous balance in the Salaries Payable account at that time. Based on the information provided, make the December 31 adjusting journal entry to bring the balances to correct.</h3>
+        <p>Debit Salaries Expense $3,575; Credit Salaries Payable $3,575.</p>
+
+        <h3>EA8. LO 4.3 Supplies were purchased on January 1, to be used throughout the year, in the amount of $8,500. On December 31, a physical count revealed that the remaining supplies totaled $1,200. There was no beginning of the year balance in the Supplies account. Based on the information provided:</h3>
+        <ul>
+            <li>a) Create journal entries for the original transaction → Debit Supplies $8,500; Credit Cash $8,500.</li>
+            <li>b) Create journal entries for the December 31 adjustment needed to bring the balances to correct → Supplies used = $8,500 - $1,200 = $7,300. Debit Supplies Expense $7,300; Credit Supplies $7,300.</li>
+            <li>c) Show the activity, with ending balance → Supplies: Beginning $0 + $8,500 - $7,300 = Ending $1,200.</li>
+        </ul>
+
+        <h3>EA9. LO 4.3 Prepare journal entries to record the following business transaction and related adjusting entry.</h3>
+        <ul>
+            <li>a) January 12, purchased supplies for cash, to be used all year, $3,850 → Debit Supplies $3,850; Credit Cash $3,850.</li>
+            <li>b) December 31, physical count of remaining supplies, $800 → Supplies used = $3,850 - $800 = $3,050. Debit Supplies Expense $3,050; Credit Supplies $3,050.</li>
+        </ul>
+
+        <h3>EA10. LO 4.3 Prepare journal entries to record the following adjustments.</h3>
+        <ul>
+            <li>a) Insurance that expired this period, $18,000 → Debit Insurance Expense $18,000; Credit Prepaid Insurance $18,000.</li>
+            <li>b) Depreciation on assets, $4,800 → Debit Depreciation Expense $4,800; Credit Accumulated Depreciation $4,800.</li>
+            <li>c) Salaries earned by employees but unpaid, $1,200 → Debit Salaries Expense $1,200; Credit Salaries Payable $1,200.</li>
+        </ul>
+
+        <h3>EA11. LO 4.3 Prepare adjusting journal entries, as needed, considering the account balances excerpted from the unadjusted trial balance and the adjustment data.</h3>
+        <p>Excerpt from Unadjusted Trial Balance. Debits: Fixed Assets 120,000; Prepaid Rent 18,000. Credits: Accumulated Depreciation 24,000; Unearned Revenue 3,500.</p>
+        <ul>
+            <li>a) depreciation on fixed assets, $8,500 → Debit Depreciation Expense $8,500; Credit Accumulated Depreciation $8,500.</li>
+            <li>b) unexpired prepaid rent, $12,500 → Expired rent = $18,000 - $12,500 = $5,500. Debit Rent Expense $5,500; Credit Prepaid Rent $5,500.</li>
+            <li>c) remaining balance of unearned revenue, $555 → Earned revenue = $3,500 - $555 = $2,945. Debit Unearned Revenue $2,945; Credit Revenue $2,945.</li>
+        </ul>
+
+        <h3>EA12. LO 4.4 Prepare an adjusted trial balance from the following adjusted account balances (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 6,600; Accounts Receivable 12,750; Administrative Expense 49,150; Cash 28,900; Common Stock 15,000; Prepaid Insurance 8,800; Service Revenue 78,000.</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>28,900</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>12,750</td><td></td></tr>
+            <tr><td>Prepaid Insurance</td><td>8,800</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>6,600</td></tr>
+            <tr><td>Common Stock</td><td></td><td>15,000</td></tr>
+            <tr><td>Service Revenue</td><td></td><td>78,000</td></tr>
+            <tr><td>Administrative Expense</td><td>49,150</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>99,600</strong></td><td><strong>99,600</strong></td></tr>
+        </table>
+
+        <h3>EA13. LO 4.4 Prepare an adjusted trial balance from the following account information, considering the adjustment data provided (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 11,700; Accounts Receivable 17,100; Administrative Expense 54,800; Cash 44,800; Common Stock 30,000; Prepaid Insurance 16,000; Service Revenue 91,000.</p>
+        <p>Adjustments needed: Salaries due to administrative employees, but unpaid at period end, $2,000; Insurance still unexpired at end of the period, $12,000.</p>
+        <p>(Adjust: Debit Salaries Expense $2,000; Credit Salaries Payable $2,000. Expired insurance = $16,000 - $12,000 = $4,000. Debit Insurance Expense $4,000; Credit Prepaid Insurance $4,000. Assume administrative expense includes salaries; add new lines for Insurance Expense if needed.)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>44,800</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>17,100</td><td></td></tr>
+            <tr><td>Prepaid Insurance</td><td>12,000</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>11,700</td></tr>
+            <tr><td>Salaries Payable</td><td></td><td>2,000</td></tr>
+            <tr><td>Common Stock</td><td></td><td>30,000</td></tr>
+            <tr><td>Service Revenue</td><td></td><td>91,000</td></tr>
+            <tr><td>Administrative Expense</td><td>54,800</td><td></td></tr>
+            <tr><td>Salaries Expense</td><td>2,000</td><td></td></tr>
+            <tr><td>Insurance Expense</td><td>4,000</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>134,700</strong></td><td><strong>134,700</strong></td></tr>
+        </table>
+
+        <h3>EA14. LO 4.5 From the following Company A adjusted trial balance, prepare simple financial statements, as follows:</h3>
+        <p>Adjusted Trial Balance. Debit Accounts: Cash 42,000; Accounts Receivable 11,300; Prepaid Insurance 14,800; Administrative Expenses 42,800; Total Debits 110,900. Credit Accounts: Accounts Payable 10,900; Salaries Payable 14,000; Common Stock 25,000; Service Revenue 61,000; Total Credits 110,900.</p>
+        <ul>
+            <li>a) Income Statement: Service Revenue $61,000; Less Administrative Expenses $42,800; Net Income $18,200.</li>
+            <li>b) Retained Earnings Statement: Beginning Retained Earnings $0 (assumed); Add Net Income $18,200; Less Dividends $0 (not given); Ending Retained Earnings $18,200.</li>
+            <li>c) Balance Sheet: Assets $68,100 (Cash $42,000 + AR $11,300 + Prepaid $14,800). Liabilities $24,900 (AP $10,900 + SP $14,000). Equity $43,200 (CS $25,000 + RE $18,200).</li>
+        </ul>
+    </div>
+
+    <div id="exercise-set-b" class="tab-content">
+        <h2>Exercise Set B</h2>
+        <h3>EB1. LO 4.2 Identify whether each of the following transactions, which are related to revenue recognition, are accrual, deferral, or neither.</h3>
+        <ul>
+            <li>a) provided legal services to client, who paid at the time of service → Neither</li>
+            <li>b) received cash for legal services performed last month → Neither</li>
+            <li>c) received cash from clients for future services to be provided → Deferral</li>
+            <li>d) provided legal services to client, to be collected next month → Accrual</li>
+        </ul>
+
+        <h3>EB2. LO 4.2 Identify whether each of the following transactions, which are related to expense recognition, are accrual, deferral, or neither.</h3>
+        <ul>
+            <li>a) recorded employee salaries earned, to be paid in future month → Accrual</li>
+            <li>b) paid employees for current month salaries → Neither</li>
+            <li>c) paid employee salaries for work performed in a prior month → Neither</li>
+            <li>d) gave an employee an advance on future wages → Deferral (prepaid expense for wages)</li>
+        </ul>
+
+        <h3>EB3. LO 4.2 and LO 4.3 Indicate what impact the following adjustments have on the accounting equation, Assets = Liabilities + Equity (assume normal balances).</h3>
+        <ul>
+            <li>A. Prepaid Insurance adjusted from $5,000 to $3,600 → Assets -1,400, Equity -1,400 (expense increase)</li>
+            <li>B. Interest Payable adjusted from $5,300 to $6,800 → Liabilities +1,500, Equity -1,500 (expense increase)</li>
+            <li>C. Prepaid Insurance adjusted from $18,500 to $6,300 → Assets -12,200, Equity -12,200</li>
+            <li>D. Supplies account balance $500, actual count $220 → Assets -280, Equity -280</li>
+        </ul>
+
+        <h3>EB4. LO 4.2 What two accounts are affected by the needed adjusting entries?</h3>
+        <ul>
+            <li>a) supplies actual counts are lower than account balance → Supplies Expense, Supplies</li>
+            <li>b) employee salaries are due but not paid at year end → Salaries Expense, Salaries Payable</li>
+            <li>c) insurance premiums that were paid in advance have expired → Insurance Expense, Prepaid Insurance</li>
+        </ul>
+
+        <h3>EB5. LO 4.3 Reviewing insurance policies revealed that a single policy was purchased on March 1, for one year's coverage, in the amount of $9,000. There was no previous balance in the Prepaid Insurance account at that time. Based on the information provided:</h3>
+        <ul>
+            <li>a) Make the December 31 adjusting journal entry to bring the balances to correct. → From March 1 to December 31 is 10 months. Monthly = $750. Expense = $7,500. Debit Insurance Expense $7,500; Credit Prepaid Insurance $7,500.</li>
+            <li>b) Show the impact that these transactions had. → Decreases assets by $7,500, increases expenses by $7,500, reducing net income.</li>
+        </ul>
+
+        <h3>EB6. LO 4.3 On September 1, a company received an advance rental payment of $12,000, to cover six months’ rent on an office building. There was no beginning balance in the Unearned Rent account for the period. Based on the information provided:</h3>
+        <ul>
+            <li>a) Make the December 31 adjusting journal entry to bring the balances to correct. → From September 1 to December 31 is 4 months. Monthly = $2,000. Earned = $8,000. Debit Unearned Revenue $8,000; Credit Rent Revenue $8,000.</li>
+            <li>b) Show the impact that these transactions had. → Decreases liabilities by $8,000, increases revenue by $8,000, increasing net income.</li>
+        </ul>
+
+        <h3>EB7. LO 4.3 Reviewing payroll records indicates that one-fifth of employee salaries that are due to be paid on the first payday in January, totaling $15,000, are actually for hours worked in December. There was no previous balance in the Salaries Payable account at that time. Based on the information provided, make the December 31 adjusting journal entry to bring the balances to correct.</h3>
+        <p>One-fifth = $3,000. Debit Salaries Expense $3,000; Credit Salaries Payable $3,000.</p>
+
+        <h3>EB8. LO 4.3 On July 1, a client paid an advance payment (retainer) of $10,000, to cover future legal services. During the period, the company completed $6,200 of the agreed-on services for the client. There was no beginning balance in the Unearned Revenue account for the period. Based on the information provided, make the journal entries needed to bring the balances to correct for:</h3>
+        <ul>
+            <li>a) original transaction → Debit Cash $10,000; Credit Unearned Revenue $10,000.</li>
+            <li>b) December 31 adjustment → Debit Unearned Revenue $6,200; Credit Service Revenue $6,200.</li>
+        </ul>
+
+        <h3>EB9. LO 4.3 Prepare journal entries to record the business transaction and related adjusting entry for the following:</h3>
+        <ul>
+            <li>a) March 1, paid cash for one year premium on insurance contract, $18,000 → Debit Prepaid Insurance $18,000; Credit Cash $18,000.</li>
+            <li>b) December 31, remaining unexpired balance of insurance, $3,000 → Expired = $18,000 - $3,000 = $15,000. Debit Insurance Expense $15,000; Credit Prepaid Insurance $15,000.</li>
+        </ul>
+
+        <h3>EB10. LO 4.3 Prepare journal entries to record the following adjustments:</h3>
+        <ul>
+            <li>a) revenue earned but not collected, nor recorded, $14,000 → Debit Accounts Receivable $14,000; Credit Revenue $14,000.</li>
+            <li>b) revenue earned that had originally been collected in advance, $8,500 → Debit Unearned Revenue $8,500; Credit Revenue $8,500.</li>
+            <li>c) taxes due but not yet paid, $2,750 → Debit Taxes Expense $2,750; Credit Taxes Payable $2,750.</li>
+        </ul>
+
+        <h3>EB11. LO 4.3 Prepare adjusting journal entries, as needed, considering the account balances excerpted from the unadjusted trial balance and the adjustment data.</h3>
+        <p>Excerpt from Unadjusted Trial Balance. Debits: Equipment 66,000; Supplies 6,000. Credits: Accumulated Depreciation 22,000; Salaries Payable 3,500.</p>
+        <ul>
+            <li>a) amount due for employee salaries, $4,800 → Additional payable = $4,800 - $3,500 = $1,300. Debit Salaries Expense $1,300; Credit Salaries Payable $1,300.</li>
+            <li>b) actual count of supplies inventory, $2,300 → Used = $6,000 - $2,300 = $3,700. Debit Supplies Expense $3,700; Credit Supplies $3,700.</li>
+            <li>c) depreciation on equipment, $3,000 → Debit Depreciation Expense $3,000; Credit Accumulated Depreciation $3,000.</li>
+        </ul>
+
+        <h3>EB12. LO 4.4 Prepare an adjusted trial balance from the following adjusted account balances (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 22,400; Accounts Receivable 45,750; Administrative Expense 57,700; Cash 56,500; Common Stock 40,000; Prepaid Rent 8,750; Revenue 106,300.</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>56,500</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>45,750</td><td></td></tr>
+            <tr><td>Prepaid Rent</td><td>8,750</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>22,400</td></tr>
+            <tr><td>Common Stock</td><td></td><td>40,000</td></tr>
+            <tr><td>Revenue</td><td></td><td>106,300</td></tr>
+            <tr><td>Administrative Expense</td><td>57,700</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>168,700</strong></td><td><strong>168,700</strong></td></tr>
+        </table>
+
+        <h3>EB13. LO 4.4 Prepare an adjusted trial balance from the following account information, considering the adjustment data provided (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 10,075; Accounts Receivable 15,500; Cash 64,575; Common Stock 31,000; Fees Earned Revenue 82,000; Operating Expense 38,000; Supplies 5,000.</p>
+        <p>Adjustments needed: Physical count of supplies inventory remaining at end of period, $2,150; Taxes payable at end of period, $3,850.</p>
+        <p>(Supplies used = $5,000 - $2,150 = $2,850. Debit Supplies Expense $2,850; Credit Supplies $2,850. Debit Taxes Expense $3,850; Credit Taxes Payable $3,850.)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>64,575</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>15,500</td><td></td></tr>
+            <tr><td>Supplies</td><td>2,150</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>10,075</td></tr>
+            <tr><td>Taxes Payable</td><td></td><td>3,850</td></tr>
+            <tr><td>Common Stock</td><td></td><td>31,000</td></tr>
+            <tr><td>Fees Earned Revenue</td><td></td><td>82,000</td></tr>
+            <tr><td>Operating Expense</td><td>38,000</td><td></td></tr>
+            <tr><td>Supplies Expense</td><td>2,850</td><td></td></tr>
+            <tr><td>Taxes Expense</td><td>3,850</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>126,925</strong></td><td><strong>126,925</strong></td></tr>
+        </table>
+
+        <h3>EB14. LO 4.5 From the following Company B adjusted trial balance, prepare simple financial statements, as follows:</h3>
+        <p>Adjusted Trial Balance. Debit Accounts: Cash 77,800; Accounts Receivable 19,500; Supplies 7,650; Operating Expense 39,200; Total Debits 144,150. Credit Accounts: Accounts Payable 8,500; Taxes Payable 5,350; Common Stock 35,000; Fees Earned Revenue 95,300; Total Credits 144,150.</p>
+        <ul>
+            <li>a) Income Statement: Fees Earned Revenue $95,300; Less Operating Expense $39,200; Net Income $56,100.</li>
+            <li>b) Retained Earnings Statement: Beginning Retained Earnings $0 (assumed); Add Net Income $56,100; Less Dividends $0; Ending Retained Earnings $56,100.</li>
+            <li>c) Balance Sheet: Assets $104,950 (Cash $77,800 + AR $19,500 + Supplies $7,650). Liabilities $13,850 (AP $8,500 + TP $5,350). Equity $91,100 (CS $35,000 + RE $56,100).</li>
+        </ul>
+    </div>
+
+    <div id="problem-set-a" class="tab-content">
+        <h2>Problem Set A</h2>
+        <h3>PA1. LO 4.2 Identify whether each of the following transactions, which are related to revenue recognition, are accrual, deferral, or neither.</h3>
+        <ul>
+            <li>a) earn now, collect now → Neither</li>
+            <li>b) earn now, collect later → Accrual</li>
+            <li>c) earn later, collect now → Deferral</li>
+        </ul>
+
+        <h3>PA2. LO 4.1 To demonstrate the difference between cash account activity and accrual basis profits (net income), note the amount each transaction affects cash and the amount each transaction affects net income.</h3>
+        <ul>
+            <li>a) paid balance due for accounts payable $6,900 → Cash: -$6,900; Net Income: $0</li>
+            <li>b) charged clients for legal services provided $5,200 → Cash: $0; Net Income: +$5,200</li>
+            <li>c) purchased supplies on account $1,750 → Cash: $0; Net Income: $0</li>
+            <li>d) collected legal service fees from clients for current month $3,700 → Cash: +$3,700; Net Income: +$3,700 (if current)</li>
+            <li>e) issued stock in exchange for a note payable $10,000 → Cash: $0; Net Income: $0</li>
+        </ul>
+
+        <h3>PA3. LO 4.2 Identify which type of adjustment is indicated by these transactions. Choose accrued revenue, accrued expense, deferred revenue, deferred expense, or estimate.</h3>
+        <ul>
+            <li>a) utilities owed but not paid → Accrued expense</li>
+            <li>b) cash received in advance for future services → Deferred revenue</li>
+            <li>c) supplies inventory purchased → Deferred expense</li>
+            <li>d) fees earned but not yet collected → Accrued revenue</li>
+            <li>e) depreciation expense recorded → Estimate</li>
+            <li>f) insurance paid for future periods → Deferred expense</li>
+        </ul>
+
+        <h3>PA4. LO 4.2 Identify which type of adjustment is associated with this account, and what is the other account in the adjustment? Choose accrued revenue, accrued expense, deferred revenue, or deferred expense.</h3>
+        <ul>
+            <li>a) accounts receivable → Accrued revenue (other: revenue)</li>
+            <li>b) interest payable → Accrued expense (other: interest expense)</li>
+            <li>c) prepaid insurance → Deferred expense (other: insurance expense)</li>
+            <li>d) unearned rent → Deferred revenue (other: rent revenue)</li>
+        </ul>
+
+        <h3>PA5. LO 4.2 Indicate what impact the following adjustments have on the accounting equation, Assets = Liabilities + Equity (assume normal balances).</h3>
+        <ul>
+            <li>A. Unearned Fees adjusted from $7,000 to $5,000 → Liabilities -$2,000, Equity +$2,000</li>
+            <li>B. Recorded depreciation expense of $12,000 → Assets -$12,000, Equity -$12,000</li>
+            <li>C. Prepaid Insurance adjusted from $18,500 to $6,300 → Assets -$12,200, Equity -$12,200</li>
+            <li>D. Supplies account balance $500, actual count $220 → Assets -$280, Equity -$280</li>
+        </ul>
+
+        <h3>PA6. LO 4.2 What two accounts are affected by each of these adjustments?</h3>
+        <ul>
+            <li>a) billed customers for services provided → Accounts Receivable, Service Revenue</li>
+            <li>b) adjusted prepaid insurance to correct → Insurance Expense, Prepaid Insurance</li>
+            <li>c) recorded depreciation expense → Depreciation Expense, Accumulated Depreciation</li>
+            <li>d) recorded unpaid utility bill → Utility Expense, Utilities Payable</li>
+            <li>e) adjusted supplies inventory to correct → Supplies Expense, Supplies</li>
+        </ul>
+
+        <h3>PA7. LO 4.3 Using the following information:</h3>
+        <p>Cost of asset, $250,000; Accumulated depreciation, beginning of year, $80,000; Current year depreciation, $25,000.</p>
+        <ul>
+            <li>a) Make the December 31 adjusting journal entry for depreciation → Debit Depreciation Expense $25,000; Credit Accumulated Depreciation $25,000.</li>
+            <li>b) Determine the net book value (NBV) of the asset on December 31 → NBV = $250,000 - ($80,000 + $25,000) = $145,000.</li>
+        </ul>
+
+        <h3>PA8. LO 4.3 Use the following account T-balances (assume normal balances) and correct balance information to make the December 31 adjusting journal entries.</h3>
+        <p>Prepaid Insurance: $26,000 T-Account Balance, $14,000 Correct Balance. Salaries Payable: $5,500 T-Account Balance, $6,200 Correct Balance. Unearned Rental Revenue: $8,000 T-Account Balance, $1,600 Correct Balance.</p>
+        <ul>
+            <li>Prepaid Insurance: Expired = $26,000 - $14,000 = $12,000. Debit Insurance Expense $12,000; Credit Prepaid Insurance $12,000.</li>
+            <li>Salaries Payable: Additional = $6,200 - $5,500 = $700. Debit Salaries Expense $700; Credit Salaries Payable $700.</li>
+            <li>Unearned Rental Revenue: Earned = $8,000 - $1,600 = $6,400. Debit Unearned Rental Revenue $6,400; Credit Rental Revenue $6,400.</li>
+        </ul>
+
+        <h3>PA9. LO 4.3 Use the following account T-balances (assume normal balances) and correct balance information to make the December 31 adjusting journal entries.</h3>
+        <p>Unearned Service Revenue: $24,000 T-Account Balance, $10,500 Correct Balance. Supplies: $8,500 T-Account Balance, $2,600 Correct Balance. Interest Payable: $2,400 T-Account Balance, $2,000 Correct Balance.</p>
+        <ul>
+            <li>Unearned Service Revenue: Earned = $24,000 - $10,500 = $13,500. Debit Unearned Service Revenue $13,500; Credit Service Revenue $13,500.</li>
+            <li>Supplies: Used = $8,500 - $2,600 = $5,900. Debit Supplies Expense $5,900; Credit Supplies $5,900.</li>
+            <li>Interest Payable: To bring to $2,000 from $2,400, Debit Interest Payable $400; Credit Interest Expense $400 (reversing excess, unusual but based on "correct").</li>
+        </ul>
+
+        <h3>PA10. LO 4.3 Prepare journal entries to record the following transactions. Create a T-account for Interest Payable, post any entries that affect the account, and tally the ending balance for the account (assume Interest Payable beginning balance of $2,500).</h3>
+        <ul>
+            <li>a) March 1, paid interest due on note, $2,500 → Debit Interest Payable $2,500; Credit Cash $2,500.</li>
+            <li>b) December 31, interest accrued on note payable, $4,250 → Debit Interest Expense $4,250; Credit Interest Payable $4,250.</li>
+            <li>Interest Payable T-account: Beginning $2,500 - $2,500 + $4,250 = Ending $4,250.</li>
+        </ul>
+
+        <h3>PA11. LO 4.3 Prepare journal entries to record the following transactions. Create a T-account for Prepaid Insurance, post any entries that affect the account, and tally the ending balance for the account (assume Prepaid Insurance beginning balance of $9,000).</h3>
+        <ul>
+            <li>a) April 1, paid cash for one-year policy, $18,000 → Debit Prepaid Insurance $18,000; Credit Cash $18,000.</li>
+            <li>b) December 31, unexpired premiums, $4,500 → Expired = ($9,000 + $18,000) - $4,500 = $22,500. Debit Insurance Expense $22,500; Credit Prepaid Insurance $22,500.</li>
+            <li>Prepaid Insurance T-account: Beginning $9,000 + $18,000 - $22,500 = Ending $4,500.</li>
+        </ul>
+
+        <h3>PA12. LO 4.3 Determine the amount of cash expended for Salaries during the month, based on the entries in the following accounts (assume 0 beginning balances).</h3>
+        <p>Salaries Expense, Debit 55,000. Salaries Payable, Credit 6,000.</p>
+        <p>Cash expended = Salaries Expense $55,000 - ending Salaries Payable $6,000 = $49,000 (assuming no beginning payable).</p>
+
+        <h3>PA13. LO 4.3 Prepare adjusting journal entries, as needed, considering the account balances excerpted from the unadjusted trial balance and the adjustment data.</h3>
+        <p>Excerpt from Unadjusted Trial Balance. Debits: Property Plant and Equipment 320,000; Prepaid Insurance 24,000; Supplies 7,500. Credits: Accumulated Depreciation 89,500; Unearned Service Revenue 3,000.</p>
+        <ul>
+            <li>a) supplies actual count at year end, $6,500 → Used = $7,500 - $6,500 = $1,000. Debit Supplies Expense $1,000; Credit Supplies $1,000.</li>
+            <li>b) remaining unexpired insurance, $6,000 → Expired = $24,000 - $6,000 = $18,000. Debit Insurance Expense $18,000; Credit Prepaid Insurance $18,000.</li>
+            <li>c) remaining unearned service revenue, $1,200 → Earned = $3,000 - $1,200 = $1,800. Debit Unearned Service Revenue $1,800; Credit Service Revenue $1,800.</li>
+            <li>d) salaries owed to employees, $2,400 → Debit Salaries Expense $2,400; Credit Salaries Payable $2,400.</li>
+            <li>e) depreciation on property plant and equipment, $18,000 → Debit Depreciation Expense $18,000; Credit Accumulated Depreciation $18,000.</li>
+        </ul>
+
+        <h3>PA14. LO 4.4 Prepare an adjusted trial balance from the adjusted account balances; solve for the one missing account balance: Cash (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 19,000; Accounts Receivable 23,760; Common Stock 38,000; Dividends 9,000; Equipment 20,000; Prepaid Insurance 21,466; Land 45,000; Notes Payable 61,000; Retained Earnings 18,815; Insurance Expense 19,689; Service Revenue 90,550; Supplies 5,250; Salaries Expense 51,000.</p>
+        <p>(Solved Cash = $32,200)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>32,200</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>23,760</td><td></td></tr>
+            <tr><td>Supplies</td><td>5,250</td><td></td></tr>
+            <tr><td>Prepaid Insurance</td><td>21,466</td><td></td></tr>
+            <tr><td>Equipment</td><td>20,000</td><td></td></tr>
+            <tr><td>Land</td><td>45,000</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>19,000</td></tr>
+            <tr><td>Notes Payable</td><td></td><td>61,000</td></tr>
+            <tr><td>Common Stock</td><td></td><td>38,000</td></tr>
+            <tr><td>Retained Earnings</td><td></td><td>18,815</td></tr>
+            <tr><td>Dividends</td><td>9,000</td><td></td></tr>
+            <tr><td>Service Revenue</td><td></td><td>90,550</td></tr>
+            <tr><td>Insurance Expense</td><td>19,689</td><td></td></tr>
+            <tr><td>Salaries Expense</td><td>51,000</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>227,365</strong></td><td><strong>227,365</strong></td></tr>
+        </table>
+
+        <h3>PA15. LO 4.4 Prepare an adjusted trial balance from the following account information, considering the adjustment data provided (assume accounts have normal balances). Equipment was recently purchased, so there is neither depreciation expense nor accumulated depreciation.</h3>
+        <p>Accounts Payable 9,500; Accounts Receivable 14,260; Cash 22,222; Common Stock 30,000; Dividends 5,000; Equipment 12,000; Prepaid Insurance 25,444; Land 20,000; Notes Payable 26,000; Retained Earnings 12,815; Insurance Expense 12,689; Service Revenue 89,550; Supplies 2,750; Salaries Expense 53,500.</p>
+        <p>Adjustments needed: Salaries due to employees, but unpaid at the end of the period, $2,000; Insurance still unexpired at end of the period, $12,000.</p>
+        <p>(Expired insurance = $25,444 - $12,000 = $13,444. Total Insurance Expense = $12,689 + $13,444 = $26,133. Salaries Expense = $53,500 + $2,000 = $55,500.)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>22,222</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>14,260</td><td></td></tr>
+            <tr><td>Supplies</td><td>2,750</td><td></td></tr>
+            <tr><td>Prepaid Insurance</td><td>12,000</td><td></td></tr>
+            <tr><td>Equipment</td><td>12,000</td><td></td></tr>
+            <tr><td>Land</td><td>20,000</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>9,500</td></tr>
+            <tr><td>Notes Payable</td><td></td><td>26,000</td></tr>
+            <tr><td>Salaries Payable</td><td></td><td>2,000</td></tr>
+            <tr><td>Common Stock</td><td></td><td>30,000</td></tr>
+            <tr><td>Retained Earnings</td><td></td><td>12,815</td></tr>
+            <tr><td>Dividends</td><td>5,000</td><td></td></tr>
+            <tr><td>Service Revenue</td><td></td><td>89,550</td></tr>
+            <tr><td>Insurance Expense</td><td>26,133</td><td></td></tr>
+            <tr><td>Salaries Expense</td><td>55,500</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>169,865</strong></td><td><strong>169,865</strong></td></tr>
+        </table>
+
+        <h3>PA16. LO 4.4 Prepare an adjusted trial balance from the following account information, and also considering the adjustment data provided (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 26,000; Accounts Receivable 8,000; Cash 29,000; Common Stock 33,000; Dividends 9,000; Equipment 68,000; Notes Payable (due next month) 29,000; Salaries Expense 42,000; Salaries Payable 2,000; Service Revenue 75,000; Supplies 5,000; Transportation Expense 4,000.</p>
+        <p>Adjustments needed: Remaining unpaid Salaries due to employees at the end of the period, $0; Accrued Interest Payable at the end of the period, $7,700.</p>
+        <p>(For salaries: Debit Salaries Payable $2,000; Credit Salaries Expense $2,000. Salaries Expense = $42,000 - $2,000 = $40,000. Add Interest Expense $7,700; Interest Payable $7,700.)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>29,000</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>8,000</td><td></td></tr>
+            <tr><td>Supplies</td><td>5,000</td><td></td></tr>
+            <tr><td>Equipment</td><td>68,000</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>26,000</td></tr>
+            <tr><td>Notes Payable</td><td></td><td>29,000</td></tr>
+            <tr><td>Interest Payable</td><td></td><td>7,700</td></tr>
+            <tr><td>Common Stock</td><td></td><td>33,000</td></tr>
+            <tr><td>Dividends</td><td>9,000</td><td></td></tr>
+            <tr><td>Service Revenue</td><td></td><td>75,000</td></tr>
+            <tr><td>Salaries Expense</td><td>40,000</td><td></td></tr>
+            <tr><td>Transportation Expense</td><td>4,000</td><td></td></tr>
+            <tr><td>Interest Expense</td><td>7,700</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>170,700</strong></td><td><strong>170,700</strong></td></tr>
+        </table>
+
+        <h3>PA17. LO 4.5 Using the following Company W information, prepare a Retained Earnings Statement.</h3>
+        <p>Retained earnings balance January 1, 2019, $43,500; Net income for year 2019, $55,289; Dividends declared and paid for year 2019, $18,000.</p>
+        <p>Beginning Retained Earnings $43,500; Add Net Income $55,289; Subtotal $98,789; Less Dividends $18,000; Ending Retained Earnings $80,789.</p>
+
+        <h3>PA18. LO 4.5 From the following Company Y adjusted trial balance, prepare simple financial statements, as follows:</h3>
+        <p>Adjusted Trial Balance. Debit Accounts: Cash 32,000; Accounts Receivable 17,300; Prepaid Insurance 6,400; Land 10,000; Dividends 8,000; Insurance Expense 5,600; Salaries Expense 24,000; Miscellaneous Expense 22,800; Total Debits 126,100. Credit Accounts: Accounts Payable 10,900; Salaries Payable 6,000; Common Stock 31,000; Retained Earnings 4,200; Service Revenue 74,000; Total Credits 126,100.</p>
+        <ul>
+            <li>a) Income Statement: Service Revenue $74,000; Expenses $52,400 (Insurance $5,600 + Salaries $24,000 + Miscellaneous $22,800); Net Income $21,600.</li>
+            <li>b) Retained Earnings Statement: Beginning Retained Earnings $4,200; Add Net Income $21,600; Less Dividends $8,000; Ending Retained Earnings $17,800.</li>
+            <li>c) Balance Sheet: Assets $65,700 (Cash $32,000 + AR $17,300 + Prepaid $6,400 + Land $10,000). Liabilities $16,900 (AP $10,900 + SP $6,000). Equity $48,800 (CS $31,000 + RE $17,800).</li>
+        </ul>
+    </div>
+
+    <div id="problem-set-b" class="tab-content">
+        <h2>Problem Set B</h2>
+        <h3>PB1. LO 4.1 Identify whether each of the following transactions, which are related to revenue recognition, are accrual, deferral, or neither.</h3>
+        <ul>
+            <li>a) expense now, pay now → Neither (but note: question mentions revenue, but lists expenses; answering as expense)</li>
+            <li>b) expense later, pay now → Deferral</li>
+            <li>c) expense now, pay later → Accrual</li>
+        </ul>
+
+        <h3>PB2. LO 4.1 To demonstrate the difference between cash account activity and accrual basis profits (net income), note the amount each transaction affects cash and the amount each transaction affects net income.</h3>
+        <ul>
+            <li>a) issued stock for cash $20,000 → Cash +$20,000; Net Income $0</li>
+            <li>b) purchased supplies inventory on account $1,800 → Cash $0; Net Income $0</li>
+            <li>c) paid employee salaries; assume it was current day’s expenses $950 → Cash -$950; Net Income -$950</li>
+            <li>d) paid note payment to bank (principal only) $1,200 → Cash -$1,200; Net Income $0</li>
+            <li>e) collected balance on accounts receivable $4,750 → Cash +$4,750; Net Income $0</li>
+        </ul>
+
+        <h3>PB3. LO 4.2 Identify which type of adjustment is indicated by these transactions. Choose accrued revenue, accrued expense, deferred revenue, or deferred expense.</h3>
+        <ul>
+            <li>a) fees earned and billed, but not collected → Accrued revenue</li>
+            <li>b) recorded depreciation expense → Estimate (classified as accrued/estimate)</li>
+            <li>c) fees collected in advance of services → Deferred revenue</li>
+            <li>d) salaries owed but not yet paid → Accrued expense</li>
+            <li>e) property rentals costs, prepaid for future months → Deferred expense</li>
+            <li>f) inventory purchased for cash → Deferred expense (if not used immediately)</li>
+        </ul>
+
+        <h3>PB4. LO 4.2 Identify which type of adjustment is associated with this account, and what the other account is in the adjustment. Choose accrued revenue, accrued expense, deferred revenue, or deferred expense.</h3>
+        <ul>
+            <li>a) Salaries Payable → Accrued expense (Salaries Expense)</li>
+            <li>b) Interest Receivable → Accrued revenue (Interest Revenue)</li>
+            <li>c) Unearned Fee Revenue → Deferred revenue (Fee Revenue)</li>
+            <li>d) Prepaid Rent → Deferred expense (Rent Expense)</li>
+        </ul>
+
+        <h3>PB5. LO 4.2 Indicate what impact the following adjustments have on the accounting equation: Assets = Liabilities + Equity (assume normal balances).</h3>
+        <ul>
+            <li>A. Unearned Rent adjusted from $15,000 to $9,500 → Liabilities -$5,500, Equity +$5,500</li>
+            <li>B. Recorded salaries payable of $3,750 → Liabilities +$3,750, Equity -$3,750</li>
+            <li>C. Prepaid Rent adjusted from $6,000 to $4,000 → Assets -$2,000, Equity -$2,000</li>
+            <li>D. Recorded depreciation expense of $5,500 → Assets -$5,500, Equity -$5,500</li>
+        </ul>
+
+        <h3>PB6. LO 4.2 What two accounts are affected by each of these adjustments?</h3>
+        <ul>
+            <li>a) recorded accrued interest on note payable → Interest Expense, Interest Payable</li>
+            <li>b) adjusted unearned rent to correct → Unearned Rent, Rent Revenue</li>
+            <li>c) recorded depreciation for the year → Depreciation Expense, Accumulated Depreciation</li>
+            <li>d) adjusted salaries payable to correct → Salaries Expense, Salaries Payable</li>
+            <li>e) sold merchandise to customers on account → Accounts Receivable, Sales Revenue</li>
+        </ul>
+
+        <h3>PB7. LO 4.3 Using the following information,</h3>
+        <p>Cost of asset, $195,000; Accumulated depreciation, beginning of year, $26,000; Current year depreciation, $13,000.</p>
+        <ul>
+            <li>a) Make the December 31 adjusting journal entry for depreciation. → Debit Depreciation Expense $13,000; Credit Accumulated Depreciation $13,000.</li>
+            <li>b) Determine the net book value (NBV) of the asset on December 31. → NBV = $195,000 - ($26,000 + $13,000) = $156,000.</li>
+        </ul>
+
+        <h3>PB8. LO 4.3 Use the following account T-balances (assume normal balances) and correct balance information to make the December 31 adjusting journal entries.</h3>
+        <p>Unearned Fee Revenue: T-Account Balance 12,000, Correct Balance 9,000. Supplies: T-Account Balance 3,200, Correct Balance 1,050. Interest Payable: T-Account Balance 1,850, Correct Balance 1,975.</p>
+        <ul>
+            <li>Unearned Fee Revenue: Earned = $12,000 - $9,000 = $3,000. Debit Unearned Fee Revenue $3,000; Credit Fee Revenue $3,000.</li>
+            <li>Supplies: Used = $3,200 - $1,050 = $2,150. Debit Supplies Expense $2,150; Credit Supplies $2,150.</li>
+            <li>Interest Payable: Additional = $1,975 - $1,850 = $125. Debit Interest Expense $125; Credit Interest Payable $125.</li>
+        </ul>
+
+        <h3>PB9. LO 4.3 Use the following account T-balances (assume normal balances) and correct balance information to make the December 31 adjusting journal entries.</h3>
+        <p>Prepaid Insurance: T-Account Balance 12,000, Correct Balance 5,000. Taxes Payable: T-Account Balance 8,850, Correct Balance 9,900. Unearned Rental Revenue: T-Account Balance 6,000, Correct Balance 2,000.</p>
+        <ul>
+            <li>Prepaid Insurance: Expired = $12,000 - $5,000 = $7,000. Debit Insurance Expense $7,000; Credit Prepaid Insurance $7,000.</li>
+            <li>Taxes Payable: Additional = $9,900 - $8,850 = $1,050. Debit Taxes Expense $1,050; Credit Taxes Payable $1,050.</li>
+            <li>Unearned Rental Revenue: Earned = $6,000 - $2,000 = $4,000. Debit Unearned Rental Revenue $4,000; Credit Rental Revenue $4,000.</li>
+        </ul>
+
+        <h3>PB10. LO 4.3 Prepare journal entries to record the following transactions. Create a T-account for Supplies, post any entries that affect the account, and tally ending balance for the account (assume Supplies beginning balance of $6,550).</h3>
+        <ul>
+            <li>a) January 26, purchased additional supplies for cash, $9,500 → Debit Supplies $9,500; Credit Cash $9,500.</li>
+            <li>b) December 31, actual count of supplies, $8,500 → Used = ($6,550 + $9,500) - $8,500 = $7,550. Debit Supplies Expense $7,550; Credit Supplies $7,550.</li>
+            <li>Supplies T-account: Beginning $6,550 + $9,500 - $7,550 = Ending $8,500.</li>
+        </ul>
+
+        <h3>PB11. LO 4.3 Prepare journal entries to record the following transactions. Create a T-account for Unearned Revenue, post any entries that affect the account, tally ending balance for the account (assume Unearned Revenue beginning balance of $12,500).</h3>
+        <ul>
+            <li>a) May 1, collected an advance payment from client, $15,000 → Debit Cash $15,000; Credit Unearned Revenue $15,000.</li>
+            <li>b) December 31, remaining unearned advances, $7,500 → Earned = ($12,500 + $15,000) - $7,500 = $20,000. Debit Unearned Revenue $20,000; Credit Revenue $20,000.</li>
+            <li>Unearned Revenue T-account: Beginning $12,500 + $15,000 - $20,000 = Ending $7,500.</li>
+        </ul>
+
+        <h3>PB12. LO 4.3 Determine the amount of cash expended for Insurance Premiums during the month, based on the entries in the following accounts (assume 0 beginning balances).</h3>
+        <p>Insurance Expense, Debit 31,000. Prepaid Insurance, Debit 9,000.</p>
+        <p>Cash expended = Insurance Expense $31,000 + ending Prepaid Insurance $9,000 = $40,000 (assuming no beginning prepaid).</p>
+
+        <h3>PB13. LO 4.3 Prepare adjusting journal entries, as needed, considering the account balances excerpted from the unadjusted trial balance and the adjustment data.</h3>
+        <p>Excerpt from Unadjusted Trial Balance, Debits: Buildings and Equipment 250,000; Prepaid Advertising 6,400. Credits: Accumulated Depreciation 56,000; Unearned Rental Revenue 8,900; Interest Payable 3,500.</p>
+        <ul>
+            <li>a) depreciation on buildings and equipment, $17,500 → Debit Depreciation Expense $17,500; Credit Accumulated Depreciation $17,500.</li>
+            <li>b) advertising still prepaid at year end, $2,200 → Expired = $6,400 - $2,200 = $4,200. Debit Advertising Expense $4,200; Credit Prepaid Advertising $4,200.</li>
+            <li>c) interest due on notes payable, $4,300 → Additional = $4,300 - $3,500 = $800. Debit Interest Expense $800; Credit Interest Payable $800.</li>
+            <li>d) unearned rental revenue, $6,900 → Earned = $8,900 - $6,900 = $2,000. Debit Unearned Rental Revenue $2,000; Credit Rental Revenue $2,000.</li>
+            <li>e) interest receivable on notes receivable, $1,200 → Debit Interest Receivable $1,200; Credit Interest Revenue $1,200.</li>
+        </ul>
+
+        <h3>PB14. LO 4.4 Prepare an adjusted trial balance from the adjusted account balances; solve for the one missing account balance: Dividends (assume accounts have normal balances). Equipment was recently purchased, so there is neither depreciation expense nor accumulated depreciation.</h3>
+        <p>Accounts Payable 9,000; Accounts Receivable 16,032; Cash 20,450; Common Stock 24,000; Equipment 29,000; Prepaid Insurance 9,444; Land 34,000; Notes Payable 8,000; Retained Earnings 31,315; Insurance Expense 12,689; Service Revenue 82,500; Supplies 9,700; Salaries Expense 51,500.</p>
+        <p>(Note: The numbers in the book may have a discrepancy, but assuming balance calculation, Dividends is the plug. Based on debits and credits, potential error; assume Dividends $0 for balance, but calculation shows imbalance. Refer to book for exact.)</p>
+
+        <h3>PB15. LO 4.4 Prepare an adjusted trial balance from the following account information, considering the adjustment data provided (assume accounts have normal balances). Building and Equipment were recently purchased, so there is neither depreciation expense nor accumulated depreciation.</h3>
+        <p>Accounts Payable 3,600; Accounts Receivable 45,333; Building 156,000; Cash 50,480; Common Stock 110,000; Dividends 18,000; Equipment 33,500; Fees Earned Revenue 225,430; Land 18,000; Supplies Expense 5,123; Notes Payable 85,500; Retained Earnings 60,606; Salaries Expense 151,900; Supplies 6,800.</p>
+        <p>Adjustments needed: Physical count of supplies inventory remaining at end of period, $3,300; Customer fees collected in advance (payments were recorded as Fees Earned), $18,500.</p>
+        <p>(Supplies used = $6,800 - $3,300 = $3,500. Total Supplies Expense = $5,123 + $3,500 = $8,623. For fees: Debit Fees Earned Revenue $18,500; Credit Unearned Revenue $18,500. Revenue = $225,430 - $18,500 = $206,930.)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>50,480</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>45,333</td><td></td></tr>
+            <tr><td>Supplies</td><td>3,300</td><td></td></tr>
+            <tr><td>Land</td><td>18,000</td><td></td></tr>
+            <tr><td>Building</td><td>156,000</td><td></td></tr>
+            <tr><td>Equipment</td><td>33,500</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>3,600</td></tr>
+            <tr><td>Notes Payable</td><td></td><td>85,500</td></tr>
+            <tr><td>Unearned Revenue</td><td></td><td>18,500</td></tr>
+            <tr><td>Common Stock</td><td></td><td>110,000</td></tr>
+            <tr><td>Retained Earnings</td><td></td><td>60,606</td></tr>
+            <tr><td>Dividends</td><td>18,000</td><td></td></tr>
+            <tr><td>Fees Earned Revenue</td><td></td><td>206,930</td></tr>
+            <tr><td>Salaries Expense</td><td>151,900</td><td></td></tr>
+            <tr><td>Supplies Expense</td><td>8,623</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>485,136</strong></td><td><strong>485,136</strong></td></tr>
+        </table>
+
+        <h3>PB16. LO 4.4 Prepare an adjusted trial balance from the following account information, and also considering the adjustment data provided (assume accounts have normal balances).</h3>
+        <p>Accounts Payable 18,000; Accounts Receivable 4,000; Investments 88,000; Cash 19,000; Common Stock 30,000; Dividends 16,000; Prepaid Insurance 20,000; Insurance Expense 8,000; Land 26,000; Notes Payable (long term) 55,000; Salaries Expense 37,000; Sales Revenue 115,000.</p>
+        <p>Adjustments needed: Accrued interest revenue on investments at period end, $2,200; Insurance still unexpired at end of the period, $12,000.</p>
+        <p>(Interest: Debit Interest Receivable $2,200; Credit Interest Revenue $2,200. Expired insurance = $20,000 - $12,000 = $8,000. Total Insurance Expense = $8,000 + $8,000 = $16,000.)</p>
+        <table>
+            <tr><th>Account</th><th>Debit</th><th>Credit</th></tr>
+            <tr><td>Cash</td><td>19,000</td><td></td></tr>
+            <tr><td>Accounts Receivable</td><td>4,000</td><td></td></tr>
+            <tr><td>Interest Receivable</td><td>2,200</td><td></td></tr>
+            <tr><td>Prepaid Insurance</td><td>12,000</td><td></td></tr>
+            <tr><td>Investments</td><td>88,000</td><td></td></tr>
+            <tr><td>Land</td><td>26,000</td><td></td></tr>
+            <tr><td>Accounts Payable</td><td></td><td>18,000</td></tr>
+            <tr><td>Notes Payable</td><td></td><td>55,000</td></tr>
+            <tr><td>Common Stock</td><td></td><td>30,000</td></tr>
+            <tr><td>Dividends</td><td>16,000</td><td></td></tr>
+            <tr><td>Sales Revenue</td><td></td><td>115,000</td></tr>
+            <tr><td>Interest Revenue</td><td></td><td>2,200</td></tr>
+            <tr><td>Salaries Expense</td><td>37,000</td><td></td></tr>
+            <tr><td>Insurance Expense</td><td>16,000</td><td></td></tr>
+            <tr><td><strong>Totals</strong></td><td><strong>220,200</strong></td><td><strong>220,200</strong></td></tr>
+        </table>
+
+        <h3>PB17. LO 4.5 Using the following Company X information, prepare a Retained Earnings Statement:</h3>
+        <p>Retained earnings balance January 1, 2019, $121,500; Net income for year 2019, $145,800; Dividends declared and paid for year 2019, $53,000.</p>
+        <p>Beginning Retained Earnings $121,500; Add Net Income $145,800; Subtotal $267,300; Less Dividends $53,000; Ending Retained Earnings $214,300.</p>
+
+        <h3>PB18. LO 4.5 From the following Company Z adjusted trial balance, prepare simple financial statements, as follows:</h3>
+        <p>Adjusted Trial Balance. Debit Accounts: Cash 54,650; Accounts Receivable 28,750; Prepaid Insurance 8,000; Land 22,000; Dividends 36,000; Insurance Expense 32,000; Salaries Expense 126,500; Miscellaneous Expense 56,900; Total Debits 364,800. Credit Accounts: Accounts Payable 14,300; Salaries Payable 4,250; Common Stock 50,000; Retained Earnings 38,900; Service Revenue 257,350; Total Credits 364,800.</p>
+        <ul>
+            <li>a) Income Statement: Service Revenue $257,350; Expenses $215,400 (Insurance $32,000 + Salaries $126,500 + Miscellaneous $56,900); Net Income $41,950.</li>
+            <li>b) Retained Earnings Statement: Beginning Retained Earnings $38,900; Add Net Income $41,950; Less Dividends $36,000; Ending Retained Earnings $44,850.</li>
+            <li>c) Balance Sheet: Assets $113,400 (Cash $54,650 + AR $28,750 + Prepaid $8,000 + Land $22,000). Liabilities $18,550 (AP $14,300 + SP $4,250). Equity $94,850 (CS $50,000 + RE $44,850).</li>
+        </ul>
+    </div>
+
+    <div id="thought-provokers" class="tab-content">
+        <h2>Thought Provokers</h2>
+        <h3>TP1. LO 4.1 Assume you are the controller of a large corporation, and the chief executive officer (CEO) has requested that you explain to them why the net income that you are reporting for the year is so low, when the CEO knows for a fact that the cash accounts are much higher at the end of the year than they were at the beginning of the year. Write a memo to the CEO to offer some possible explanations for the disparity between financial statement net income and the change in cash during the year.</h3>
+        <p>Memo: To the CEO, The difference is due to accrual accounting. Net income includes non-cash items like depreciation and accruals (e.g., revenues earned but not collected). Cash may increase from borrowing or investing. See Statement of Cash Flows for reconciliation. Regards, Controller.</p>
+
+        <h3>TP2. LO 4.2 Search the US Securities and Exchange Commission website, and locate the latest Form 10-K for a company you would like to analyze. Submit a short memo.</h3>
+        <p>Company: Apple Inc. (AAPL). (From 2023 Form 10-K: Accrued Expenses $58,529M (accrued expense); Deferred Revenue $8,061M (deferred revenue); Other Current Liabilities $58,829M (accruals); Other Current Assets $14,433M (may include deferred expenses). Link: https://s2.q4cdn.com/470004039/files/doc_financials/2023/q4/_10-K-2023-(As-Filed).pdf.</p>
+
+        <h3>TP3. LO 4.3 Search the web for instances of possible impropriety relating to earnings management.</h3>
+        <p>Company: Enron Corporation (Energy). Indiscretion: Hid debt via special entities, manipulated accruals to inflate earnings. Impact: Overstated by billions, $74B bankruptcy. Link: https://www.sec.gov/news/press/2004-84.htm.</p>
+
+        <h3>TP4. LO 4.4 Assume you are employed as the chief financial officer of a corporation and are responsible for preparation of the financial statements... Write a short memo to the CEO...</h3>
+        <p>Memo: To the CEO, I cannot make improper adjustments to inflate profits, as it violates GAAP and ethics. Normal adjustments are done; further changes (e.g., understating expenses) would be fraud. I'll maintain accuracy. Regards, CFO.</p>
+
+        <h3>TP5. LO 4.5 Search the SEC website and locate the latest Form 10-K for a company you would like to analyze. Submit a short memo.</h3>
+        <p>Company: Tesla Inc. (TSLA). From 2023 Form 10-K: Reconstructed adjusted trial balance includes Cash $16,253M (debit), Revenues $96,773M (credit), etc. (Full list extensive; key accounts from statements). Link: https://www.sec.gov/Archives/edgar/data/1318605/000162828024002390/tsla-20231231.htm.</p>
+    </div>
+
+<script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            tabContents.forEach(content => content.classList.remove('active'));
+            const targetContent = document.getElementById(tab.dataset.tab);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    });
+
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+
+    // Search functionality
+    const searchBar = document.getElementById('search-bar');
+    const clearSearch = document.getElementById('clear-search');
+
+    searchBar.addEventListener('input', () => {
+        const query = searchBar.value.toLowerCase();
+        const allText = document.querySelectorAll('p, li, th, td, h3');
+        allText.forEach(element => {
+            element.innerHTML = element.innerHTML.replace(/<span class="highlight">([^<]+)<\/span>/gi, '$1');
+            if (query) {
+                const regex = new RegExp(`(${query})`, 'gi');
+                element.innerHTML = element.innerHTML.replace(regex, '<span class="highlight">$1</span>');
+            }
+        });
+    });
+
+    clearSearch.addEventListener('click', () => {
+        searchBar.value = '';
+        const highlights = document.querySelectorAll('.highlight');
+        highlights.forEach(highlight => {
+            highlight.outerHTML = highlight.innerHTML;
+        });
+    });
+
+    // Multiple choice feedback
+    const mcQuestions = 21; // Number of MC questions
+    for (let i = 1; i <= mcQuestions; i++) {
+        const options = document.querySelectorAll(`input[name="q${i}"]`);
+        options.forEach(option => {
+            option.addEventListener('change', () => {
+                const correctAnswer = option.parentElement.querySelector('.bold').textContent.charAt(0); // Get the correct letter, e.g., 'B'
+                const selectedValue = option.value;
+                const feedback = document.getElementById(`feedback-q${i}`);
+                if (selectedValue === correctAnswer) {
+                    feedback.textContent = 'Correct!';
+                    feedback.classList.add('correct');
+                    feedback.classList.remove('incorrect');
+                } else {
+                    feedback.textContent = 'Incorrect. Try again.';
+                    feedback.classList.add('incorrect');
+                    feedback.classList.remove('correct');
+                }
+                feedback.style.display = 'block';
+            });
+        });
+    }
+
+    // Smooth scroll for internal links (if any)
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
