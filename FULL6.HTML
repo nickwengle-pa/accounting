@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chapter 6 – Merchandising Operations & the Multistep Income Statement</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-alt: #121727;
+      --card: #161c30;
+      --card-alt: #1c2338;
+      --accent: #4f8cff;
+      --accent-soft: rgba(79, 140, 255, 0.12);
+      --accent-strong: rgba(79, 140, 255, 0.28);
+      --text: #eef2ff;
+      --text-muted: #a3add7;
+      --border-subtle: #242b42;
+      --danger: #ff6b81;
+      --radius-lg: 14px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 16px 40px rgba(0, 0, 0, 0.45);
+      --shadow-subtle: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2940 0, #050815 45%, #02030a 100%);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 16px;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.98));
+      border-radius: 22px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.35), transparent 60%);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #e5edff;
+    }
+
+    header p {
+      margin-top: 4px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .tag-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag-row span {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--accent-soft);
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.75);
+    }
+
+    .tag-row span.strong {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.96));
+    }
+
+    .tab-button {
+      position: relative;
+      flex: 0 0 auto;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-button span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-subtle);
+    }
+
+    .tab-button.active {
+      color: #e5edff;
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.3);
+    }
+
+    .tab-button.active span.dot {
+      background: var(--accent);
+    }
+
+    main {
+      padding: 16px;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.22s ease-out;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-section {
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.25), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(15, 23, 42, 1), rgba(15, 23, 42, 1));
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 16px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .card-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-section-header h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #c7d2ff;
+    }
+
+    .card-section-header p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .flashcard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .flashcard {
+      background: radial-gradient(circle at top left, var(--accent-soft), var(--card));
+      border-radius: 12px;
+      padding: 10px 11px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, border-color 0.12s ease-out;
+      font-size: 0.85rem;
+    }
+
+    .flashcard:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+      border-color: var(--accent);
+    }
+
+    .flashcard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .flashcard-header .pill {
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e5edff;
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .flashcard-question {
+      color: #e5edff;
+      margin-bottom: 6px;
+    }
+
+    .flashcard-answer {
+      color: var(--accent);
+      font-size: 0.8rem;
+      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      padding-top: 4px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .flashcard.show-answer .flashcard-answer {
+      display: block;
+    }
+
+    .flashcard.show-answer {
+      border-color: var(--accent-strong);
+      box-shadow: 0 0 0 1px var(--accent-strong), var(--shadow-subtle);
+    }
+
+    .flashcard.show-answer .flashcard-header span:last-child {
+      color: var(--accent);
+    }
+
+    .qa-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .qa-item {
+      background: linear-gradient(135deg, var(--card), var(--card-alt));
+      border-radius: 10px;
+      padding: 8px 11px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      font-size: 0.88rem;
+    }
+
+    .qa-item .q-text {
+      color: #e5edff;
+      margin-bottom: 4px;
+    }
+
+    .qa-item .a-text {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      border-top: 1px dashed rgba(148, 163, 184, 0.35);
+      padding-top: 4px;
+      margin-top: 2px;
+    }
+
+    .q-label {
+      font-weight: 600;
+      margin-right: 4px;
+      color: var(--accent);
+    }
+
+    .a-label {
+      font-weight: 600;
+      margin-right: 4px;
+      color: #c7d2ff;
+    }
+
+    @media (max-width: 720px) {
+      header {
+        padding: 16px;
+      }
+      main {
+        padding: 12px;
+      }
+      .card-section {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Chapter 6 &mdash; Merchandising Operations &amp; the Multistep Income Statement</h1>
+      <p>Multiple Choice, Short Answer, and Exercise Sets with fully worked solutions.</p>
+      <div class="tag-row">
+        <span class="strong">Inventory &amp; Discounts</span>
+        <span>Perpetual vs Periodic</span>
+        <span>FOB Shipping vs Destination</span>
+        <span>Multi-Step Income Statement</span>
+      </div>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-button active" data-tab="mc">
+        <span class="dot"></span>Multiple Choice
+      </button>
+      <button class="tab-button" data-tab="sa">
+        <span class="dot"></span>Short Answer
+      </button>
+      <button class="tab-button" data-tab="ea">
+        <span class="dot"></span>Exercise Set A
+      </button>
+      <button class="tab-button" data-tab="eb">
+        <span class="dot"></span>Exercise Set B
+      </button>
+    </nav>
+
+    <main>
+      <!-- MULTIPLE CHOICE TAB -->
+      <section id="tab-mc" class="tab-panel active">
+        <div class="card-section">
+          <div class="card-section-header">
+            <h2>Multiple Choice (MC 1&ndash;27)</h2>
+            <p>Tap a card to reveal the correct answer and a quick explanation.</p>
+          </div>
+          <div class="flashcard-grid">
+
+            <!-- MC 1 -->
+            <div class="flashcard" data-q="1">
+              <div class="flashcard-header">
+                <span class="pill">MC 1</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Which of the following is an example of a contra revenue account?
+                <br>A. sales<br>B. merchandise inventory<br>C. sales discounts<br>D. accounts payable
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> C &mdash; Sales discounts reduce revenue to net sales.
+              </div>
+            </div>
+
+            <!-- MC 2 -->
+            <div class="flashcard" data-q="2">
+              <div class="flashcard-header">
+                <span class="pill">MC 2</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                What accounts recognize a retailer&rsquo;s purchase from a manufacturer on credit?
+                <br>A. AR, Inventory<br>B. AP, Inventory<br>C. AP, Cash<br>D. Sales, AR
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> B &mdash; Purchases on credit increase inventory and accounts payable.
+              </div>
+            </div>
+
+            <!-- MC 3 -->
+            <div class="flashcard" data-q="3">
+              <div class="flashcard-header">
+                <span class="pill">MC 3</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Discount percentage for terms 3/15, n/60?
+                <br>A. 3<br>B. 15<br>C. 60<br>D. 3 and 15
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; The first number is the discount rate: 3%.
+              </div>
+            </div>
+
+            <!-- MC 4 -->
+            <div class="flashcard" data-q="4">
+              <div class="flashcard-header">
+                <span class="pill">MC 4</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Customer returns defective merchandise before paying. What accounts recognize it?
+                <br>A. Sales discount, cash<br>B. Sales returns &amp; allowances, cash<br>
+                C. AR, sales discount<br>D. AR, sales returns &amp; allowances
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> D &mdash; Reverse receivable and record contra revenue.
+              </div>
+            </div>
+
+            <!-- MC 5 -->
+            <div class="flashcard" data-q="5">
+              <div class="flashcard-header">
+                <span class="pill">MC 5</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Disadvantage of the perpetual inventory system?
+                <br>A. Real-time info<br>B. Auto-updates<br>C. Current decisions<br>D. Cost-prohibitive
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> D &mdash; Tech + infrastructure makes perpetual systems expensive.
+              </div>
+            </div>
+
+            <!-- MC 6 -->
+            <div class="flashcard" data-q="6">
+              <div class="flashcard-header">
+                <span class="pill">MC 6</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Advantage of the periodic inventory system?
+                <br>A. Frequent physical counts<br>B. Cost prohibitive<br>C. Time consuming<br>D. Real-time info
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Periodic requires or encourages regular physical counts.
+              </div>
+            </div>
+
+            <!-- MC 7 -->
+            <div class="flashcard" data-q="7">
+              <div class="flashcard-header">
+                <span class="pill">MC 7</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                NOT a reason physical inventory differs from the books?
+                <br>A. Mismanagement<br>B. Shrinkage<br>C. Damage<br>D. Sale of services
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> D &mdash; Selling services has nothing to do with inventory levels.
+              </div>
+            </div>
+
+            <!-- MC 8 -->
+            <div class="flashcard" data-q="8">
+              <div class="flashcard-header">
+                <span class="pill">MC 8</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                NOT included in Net Purchases?
+                <br>A. Purchase discounts<br>B. Beginning inventory<br>C. Purchase returns<br>D. Purchase allowances
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> B &mdash; Net purchases exclude beginning inventory.
+              </div>
+            </div>
+
+            <!-- MC 9 -->
+            <div class="flashcard" data-q="9">
+              <div class="flashcard-header">
+                <span class="pill">MC 9</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Accounts used when recording a purchase?
+                <br>A. Cash, Inventory<br>B. AP, Inventory<br>C. A or B<br>D. Cash, AP
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> C &mdash; Purchases can be for cash or on credit.
+              </div>
+            </div>
+
+            <!-- MC 10 -->
+            <div class="flashcard" data-q="10">
+              <div class="flashcard-header">
+                <span class="pill">MC 10</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Retailer pays $650, terms 3/10, n/40. Pays within discount window. Cash paid?
+                <br>A. 19.50<br>B. 630.50<br>C. 650<br>D. 195
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> B &mdash; 650 &minus; (3% &times; 650) = 630.50.
+              </div>
+            </div>
+
+            <!-- MC 11 -->
+            <div class="flashcard" data-q="11">
+              <div class="flashcard-header">
+                <span class="pill">MC 11</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Retailer returns $400 of inventory before payment. What accounts?
+                <br>A. AP, Inventory<br>B. AP, Cash<br>C. Cash, Inventory<br>D. Inventory, COGS
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Return lowers AP and lowers Inventory.
+              </div>
+            </div>
+
+            <!-- MC 12 -->
+            <div class="flashcard" data-q="12">
+              <div class="flashcard-header">
+                <span class="pill">MC 12</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Purchase allowance of $600 after payment. Journal entry?
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> Dr Cash 600 / Cr Inventory 600 &mdash; Cash refund reduces inventory cost.
+              </div>
+            </div>
+
+            <!-- MC 13 -->
+            <div class="flashcard" data-q="13">
+              <div class="flashcard-header">
+                <span class="pill">MC 13</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Sales entry for a sale on credit?
+                <br>A. Inventory, Cash<br>B. AR, Inventory<br>C. AR, Sales<br>D. Sales, COGS
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> C &mdash; The sales entry is AR and Sales.
+              </div>
+            </div>
+
+            <!-- MC 14 -->
+            <div class="flashcard" data-q="14">
+              <div class="flashcard-header">
+                <span class="pill">MC 14</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Customer pays 1,250, terms 4/15, n/30. Pays early. Cash remitted?
+                <br>A. 1,250<br>B. 1,200<br>C. 50<br>D. 500
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> B &mdash; 1,250 &minus; 4% = 1,200.
+              </div>
+            </div>
+
+            <!-- MC 15 -->
+            <div class="flashcard" data-q="15">
+              <div class="flashcard-header">
+                <span class="pill">MC 15</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Customer returns $870 before payment. Sales return entry?
+                <br>A. AR, Sales R&amp;A<br>B. AR, Cash<br>C. Sales R&amp;A, Inventory<br>D. AR, COGS
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Reverse AR and record the contra revenue.
+              </div>
+            </div>
+
+            <!-- MC 16 -->
+            <div class="flashcard" data-q="16">
+              <div class="flashcard-header">
+                <span class="pill">MC 16</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Customer obtains $220 allowance before paying.
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> Dr Sales R&amp;A 220 / Cr AR 220 &mdash; Reduces receivable and revenue.
+              </div>
+            </div>
+
+            <!-- MC 17 -->
+            <div class="flashcard" data-q="17">
+              <div class="flashcard-header">
+                <span class="pill">MC 17</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                NOT characteristic of FOB Destination?
+                <br>A. Seller pays shipping<br>B. Seller owns goods in transit<br>
+                C. Transfer when goods leave seller<br>D. Transfer when goods arrive at buyer
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> C &mdash; That is FOB Shipping Point.
+              </div>
+            </div>
+
+            <!-- MC 18 -->
+            <div class="flashcard" data-q="18">
+              <div class="flashcard-header">
+                <span class="pill">MC 18</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Buyer shipping charges, FOB Shipping Point, cash purchase?
+                <br>A. Delivery expense, cash<br>B. Inventory, cash<br>C. Inventory, AP<br>D. Buyer records nothing
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> B &mdash; Freight-in increases inventory cost.
+              </div>
+            </div>
+
+            <!-- MC 19 -->
+            <div class="flashcard" data-q="19">
+              <div class="flashcard-header">
+                <span class="pill">MC 19</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                NOT characteristic of FOB Shipping Point?
+                <br>A. Buyer pays freight<br>B. Buyer owns goods in transit<br>
+                C. Transfer when goods leave seller<br>D. Transfer when goods arrive at buyer
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> D &mdash; That is FOB Destination.
+              </div>
+            </div>
+
+            <!-- MC 20 -->
+            <div class="flashcard" data-q="20">
+              <div class="flashcard-header">
+                <span class="pill">MC 20</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                A multi-step income statement ________.
+                <br>A. separates COGS from operating expenses<br>B. treats interest revenue as operating<br>
+                C. is another name for simple<br>D. combines COGS and op expenses
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Multi-step distinguishes gross profit and operating income.
+              </div>
+            </div>
+
+            <!-- MC 21 -->
+            <div class="flashcard" data-q="21">
+              <div class="flashcard-header">
+                <span class="pill">MC 21</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Which account is an operating expense?
+                <br>A. Sales<br>B. Advertising expense<br>C. Sales R&amp;A<br>D. Interest expense
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> B &mdash; Advertising is a selling/operating expense.
+              </div>
+            </div>
+
+            <!-- MC 22 -->
+            <div class="flashcard" data-q="22">
+              <div class="flashcard-header">
+                <span class="pill">MC 22</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                A simple income statement ________.
+                <br>A. combines all revenues<br>B. does not combine all expenses<br>
+                C. separates COGS<br>D. separates revenue categories
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Simple statements lump all revenues together.
+              </div>
+            </div>
+
+            <!-- MC 23 -->
+            <div class="flashcard" data-q="23">
+              <div class="flashcard-header">
+                <span class="pill">MC 23</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                NOT reported under revenue?
+                <br>A. Interest revenue<br>B. Net sales<br>C. Rent revenue<br>D. Operating expenses
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> D &mdash; Operating expenses are not revenues.
+              </div>
+            </div>
+
+            <!-- MC 24 -->
+            <div class="flashcard" data-q="24">
+              <div class="flashcard-header">
+                <span class="pill">MC 24</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Periodic system &mdash; accounts used for purchases?
+                <br>A. Cash, Purchases<br>B. AP, Sales<br>C. AP, AR<br>D. Cash, Inventory
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Periodic uses the Purchases account.
+              </div>
+            </div>
+
+            <!-- MC 25 -->
+            <div class="flashcard" data-q="25">
+              <div class="flashcard-header">
+                <span class="pill">MC 25</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Purchase allowance $600 after payment (periodic).
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> Dr Cash / Cr Purchase Returns &amp; Allowances.
+              </div>
+            </div>
+
+            <!-- MC 26 -->
+            <div class="flashcard" data-q="26">
+              <div class="flashcard-header">
+                <span class="pill">MC 26</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Customer returns $690 before payment. What accounts?
+                <br>A. AR, Sales R&amp;A<br>B. AR, Cash<br>C. Sales R&amp;A, Purchases<br>D. Sales discount, COGS
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> A &mdash; Reverse AR and record contra revenue.
+              </div>
+            </div>
+
+            <!-- MC 27 -->
+            <div class="flashcard" data-q="27">
+              <div class="flashcard-header">
+                <span class="pill">MC 27</span><span>Tap to toggle answer</span>
+              </div>
+              <div class="flashcard-question">
+                Customer obtains $450 allowance before paying.
+              </div>
+              <div class="flashcard-answer">
+                <strong>Correct:</strong> Dr Sales R&amp;A 450 / Cr AR 450.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- SHORT ANSWER TAB -->
+      <section id="tab-sa" class="tab-panel">
+        <div class="card-section">
+          <div class="card-section-header">
+            <h2>Short Answer (SA 1&ndash;25)</h2>
+            <p>Concept checks, ratio work, and side-by-side system comparisons.</p>
+          </div>
+          <ul class="qa-list">
+
+            <!-- SA 1 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 1.</span>
+                What are some benefits to a retailer for offering a discount to a customer?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Discounts speed up cash collection, reduce credit risk, strengthen liquidity, and encourage repeat purchases.
+              </div>
+            </li>
+
+            <!-- SA 2 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 2.</span>
+                What do credit terms of 4/10, n/30 mean in regard to a purchase?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                The buyer receives a 4% discount if payment is made within 10 days; otherwise the full amount is due in 30 days.
+              </div>
+            </li>
+
+            <!-- SA 3 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 3.</span>
+                What is the difference between a sales return and a sales allowance?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                A sales return involves physically returning goods; a sales allowance is a price reduction for goods the customer keeps.
+              </div>
+            </li>
+
+            <!-- SA 4 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 4.</span>
+                If a retailer made a $350 purchase with terms 2/15, n/60, what would be paid if the discount is taken?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Discount = 2% × 350 = $7. Cash paid = $343.
+              </div>
+            </li>
+
+            <!-- SA 5 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 5.</span>
+                What are two advantages and disadvantages of the perpetual inventory system?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Advantages: real-time accuracy, better shrinkage control. Disadvantages: higher cost to implement, increased tech requirements.
+              </div>
+            </li>
+
+            <!-- SA 6 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 6.</span>
+                What are two advantages and disadvantages of the periodic inventory system?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Advantages: inexpensive, simple. Disadvantages: no real-time inventory, COGS only known at period-end.
+              </div>
+            </li>
+
+            <!-- SA 7 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 7.</span>
+                Sunrise Flowers sells flowers on credit for $130; cost is $50. What is the sale entry under a periodic system?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Debit Accounts Receivable $130; Credit Sales $130. No cost entry under periodic.
+              </div>
+            </li>
+
+            <!-- SA 8 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 8.</span>
+                Sunrise Flowers sells flowers on credit for $130; cost is $50. What is the sale entry under a perpetual system?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Debit AR $130; Credit Sales $130. Debit COGS $50; Credit Merchandise Inventory $50.
+              </div>
+            </li>
+
+            <!-- SA 9 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 9.</span>
+                Name two situations where cash would be remitted to a retailer from a manufacturer after purchase.
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                A purchase return after payment, or a purchase allowance issued after payment.
+              </div>
+            </li>
+
+            <!-- SA 10 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 10.</span>
+                Retailer buys $750, returns $30, gets $95 allowance, terms 2/10. What is the discount?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Net amount = 750 − 30 − 95 = $625. Discount = 2% × 625 = $12.50.
+              </div>
+            </li>
+
+            <!-- SA 11 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 11.</span>
+                50% of $1,100 damaged. Retailer returns 35% of damaged items. Value returned?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Damaged = $550. Returned = 35% × 550 = $110.
+              </div>
+            </li>
+
+            <!-- SA 12 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 12.</span>
+                Name two situations where cash would be remitted to a customer after purchase.
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                A sales return after payment or a sales allowance issued after payment.
+              </div>
+            </li>
+
+            <!-- SA 13 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 13.</span>
+                Customer buys $340, returns $70, gets $65 allowance, terms 3/10. Discount?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Net amount = 340 − 70 − 65 = $205. Discount = 3% × 205 = $6.15.
+              </div>
+            </li>
+
+            <!-- SA 14 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 14.</span>
+                60% of $3,600 damaged. Customer returns 35% of damaged items. Value returned?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Damaged = $2,160. Returned = 35% × 2,160 = $756.
+              </div>
+            </li>
+
+            <!-- SA 15 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 15.</span>
+                What are the main differences between FOB Destination and FOB Shipping Point?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Shipping Point: buyer owns goods in transit, buyer pays freight, transfer at seller’s dock. Destination: seller owns goods in transit, seller pays freight, transfer at buyer’s location.
+              </div>
+            </li>
+
+            <!-- SA 16 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 16.</span>
+                Buyer purchases $250 on credit, shipping $50, FOB Destination. What entries?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Buyer only records the purchase: Debit Inventory (or Purchases) $250; Credit AP $250. No freight entry for buyer.
+              </div>
+            </li>
+
+            <!-- SA 17 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 17.</span>
+                Seller sells $800 on credit, cost $300, shipping $100, FOB Destination. What entries?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Debit AR $800; Credit Sales $800. Debit COGS $300; Credit Inventory $300. Debit Freight-Out $100; Credit Cash $100.
+              </div>
+            </li>
+
+            <!-- SA 18 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 18.</span>
+                On which statement and where is freight-out recorded? Why?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Freight-out appears on the income statement under operating (selling) expenses because it is a delivery cost, not part of inventory cost.
+              </div>
+            </li>
+
+            <!-- SA 19 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 19.</span>
+                Sunrise Motors: Sales 256,400; SR&amp;A 34,890; Discounts 44,760; COGS 120,470. Gross Profit Margin Ratio?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Net sales = 176,750. Gross profit = 56,280. GPM ≈ 32%.
+              </div>
+            </li>
+
+            <!-- SA 20 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 20.</span>
+                Difference between a multi-step and simple income statement?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Multi-step separates gross profit, operating income, and non-operating items. Simple combines all revenues and all expenses with no subtotals.
+              </div>
+            </li>
+
+            <!-- SA 21 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 21.</span>
+                How can investors or lenders use Gross Profit Margin?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                GPM reveals pricing power and cost control; stronger margins indicate better ability to cover expenses, generate profit, and repay debt.
+              </div>
+            </li>
+
+            <!-- SA 22 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 22.</span>
+                August Sundries: Gross margin using multi-step format?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Net sales = 469,990. Gross margin = 169,150.
+              </div>
+            </li>
+
+            <!-- SA 23 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 23.</span>
+                Retailer buys $680, returns $120, allowance $70, terms 3/10. Discount?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Net amount = 680 − 120 − 70 = 490. Discount = 3% × 490 = $14.70.
+              </div>
+            </li>
+
+            <!-- SA 24 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 24.</span>
+                50% of $5,950 damaged. Customer returns 40% of damaged portion. Value returned?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Damaged = 2,975. Returned = 40% × 2,975 = 1,190.
+              </div>
+            </li>
+
+            <!-- SA 25 -->
+            <li class="qa-item">
+              <div class="q-text"><span class="q-label">SA 25.</span>
+                Difference in reporting sellable returns under perpetual vs periodic systems?
+              </div>
+              <div class="a-text"><span class="a-label">Answer:</span>
+                Perpetual updates inventory and COGS immediately; periodic records only the sales return and adjusts inventory/COGS at period-end.
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </section>
+
+      <!-- EXERCISE SET A TAB -->
+      <section id="tab-ea" class="tab-panel">
+        <div class="card-section">
+          <div class="card-section-header">
+            <h2>Exercise Set A (EA 1&ndash;19)</h2>
+            <p>Journal entries, returns, allowances, and system comparisons.</p>
+          </div>
+          <ul class="qa-list">
+
+            <!-- EA1 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA1.</span>
+                Bates Board Shop sells 300 surfboards at $400; cost $140; terms 3/15, n/30, dated March 1.
+                A. Initial sale<br>B. Payment on March 10.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sales = 300 × 400 = 120,000; Cost = 300 × 140 = 42,000.<br><br>
+                <strong>A. March 1</strong><br>
+                Debit Accounts Receivable $120,000<br>
+                Credit Sales $120,000<br>
+                Debit Cost of Goods Sold $42,000<br>
+                Credit Merchandise Inventory $42,000<br><br>
+                <strong>B. March 10 (within discount)</strong><br>
+                Discount = 3% × 120,000 = 3,600; Cash = 116,400.<br>
+                Debit Cash $116,400<br>
+                Debit Sales Discounts $3,600<br>
+                Credit Accounts Receivable $120,000
+              </div>
+            </li>
+
+            <!-- EA2 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA2.</span>
+                Marx Corp. purchases 135 fax machines on credit at $250, terms 4/10, n/20; pays April 17.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Total = 135 × 250 = 33,750.<br><br>
+                <strong>Purchase</strong><br>
+                Debit Merchandise Inventory $33,750<br>
+                Credit Accounts Payable $33,750<br><br>
+                <strong>Payment within discount</strong><br>
+                Discount = 4% × 33,750 = 1,350; Cash = 32,400.<br>
+                Debit Accounts Payable $33,750<br>
+                Credit Merchandise Inventory $1,350<br>
+                Credit Cash $32,400
+              </div>
+            </li>
+
+            <!-- EA3 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA3.</span>
+                Match sales/purchase terms with definitions (Sales allowance, Purchase return, etc.).
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                A. Sales allowance → iii. Customer gets partial refund, keeps goods.<br>
+                B. Purchase return → vi. Retailer returns merchandise for full refund.<br>
+                C. Sales discount → iv. Customer pays in full within discount window.<br>
+                D. Purchase discount → vii. Retailer pays in full within discount window.<br>
+                E. Sales return → i. Customer returns merchandise for full refund.<br>
+                F. Trade discount → v. Negotiated discount before final price.<br>
+                G. Purchase allowance → ii. Retailer gets partial refund, keeps goods.
+              </div>
+            </li>
+
+            <!-- EA4 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA4.</span>
+                Mars Corp. &mdash; compute net purchases and COGS for March (data from text).
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span>
+                Use:<br>
+                Net Purchases = Purchases − Purchase Returns − Purchase Allowances − Purchase Discounts + Freight-In<br>
+                COG Available = Beginning Inventory + Net Purchases<br>
+                COGS = COG Available − Ending Inventory
+              </div>
+            </li>
+
+            <!-- EA5 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA5.</span>
+                Barrio Bikes &mdash; customer returns 20 bikes ($250 sale, $100 cost). Customer hasn&rsquo;t paid; bikes are sellable.
+                Record under:
+                A. Perpetual<br>B. Periodic.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sales side = 20 × 250 = 5,000; Cost side = 20 × 100 = 2,000.<br><br>
+                <strong>A. Perpetual</strong><br>
+                Debit Sales Returns and Allowances $5,000<br>
+                Credit Accounts Receivable $5,000<br>
+                Debit Merchandise Inventory $2,000<br>
+                Credit Cost of Goods Sold $2,000<br><br>
+                <strong>B. Periodic</strong><br>
+                Debit Sales Returns and Allowances $5,000<br>
+                Credit Accounts Receivable $5,000
+              </div>
+            </li>
+
+            <!-- EA6 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA6.</span>
+                Flower Company purchases &amp; pays with terms 5/10, n/30 (Oct 13, Oct 20, Oct 30).
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Oct 13: Debit Inventory 1,300; Credit Cash 1,300.<br>
+                Oct 20: 240 × 20 = 4,800 &rarr; Debit Inventory 4,800; Credit AP 4,800.<br>
+                Oct 30: Discount 5%×4,800=240; Cash 4,560.<br>
+                Debit AP 4,800; Credit Inventory 240; Credit Cash 4,560.
+              </div>
+            </li>
+
+            <!-- EA7 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA7.</span>
+                Apex Industries purchases 24 computers, returns 5, then pays after discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase: 24×560=13,440.<br>
+                Nov 6: Dr Inventory 13,440; Cr AP 13,440.<br>
+                Return 5×560=2,800.<br>
+                Nov 10: Dr AP 2,800; Cr Inventory 2,800.<br>
+                Remaining AP=10,640.<br>
+                Nov 22: Dr AP 10,640; Cr Cash 10,640.
+              </div>
+            </li>
+
+            <!-- EA8 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA8.</span>
+                Glow Industries buys 750 lights at $23, allowance on 100 lights, pays within discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase: 750×23=17,250.<br>
+                Apr 20: Dr Inventory 17,250; Cr AP 17,250.<br>
+                Allowance: 100×8=800.<br>
+                Apr 22: Dr AP 800; Cr Inventory 800.<br>
+                AP after allowance=16,450; discount 10%=1,645; Cash=14,805.<br>
+                Apr 30: Dr AP 16,450; Cr Inventory 1,645; Cr Cash 14,805.
+              </div>
+            </li>
+
+            <!-- EA9 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA9.</span>
+                Flower Company sells flowers (cash sale + credit sale with discount).
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Oct 12: Cash sale 1,000; cost 700.<br>
+                Dr Cash 1,000; Cr Sales 1,000.<br>
+                Dr COGS 700; Cr Inventory 700.<br><br>
+                Oct 21: 40×30=1,200; cost 40×20=800.<br>
+                Dr AR 1,200; Cr Sales 1,200.<br>
+                Dr COGS 800; Cr Inventory 800.<br><br>
+                Oct 31: Discount 4%×1,200=48; Cash 1,152.<br>
+                Dr Cash 1,152; Dr Sales Discounts 48; Cr AR 1,200.
+              </div>
+            </li>
+
+            <!-- EA10 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA10.</span>
+                Apache sells 10 computers, customer returns 2, then pays after discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sale: 10×870=8,700; cost 10×560=5,600.<br>
+                Nov 7: Dr AR 8,700; Cr Sales 8,700. Dr COGS 5,600; Cr Inventory 5,600.<br>
+                Nov 14 return: 2×870=1,740; cost 2×560=1,120.<br>
+                Dr Sales R&amp;A 1,740; Cr AR 1,740.<br>
+                Dr Inventory 1,120; Cr COGS 1,120.<br>
+                Remaining AR=6,960.<br>
+                Nov 21: Dr Cash 6,960; Cr AR 6,960.
+              </div>
+            </li>
+
+            <!-- EA11 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA11.</span>
+                Glow sells 240 lights at $40, cost $23; later allows $10 each on 50 units, then gets paid within discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sale: 240×40=9,600; cost 240×23=5,520.<br>
+                May 9: Dr AR 9,600; Cr Sales 9,600. Dr COGS 5,520; Cr Inventory 5,520.<br>
+                Allowance: 50×10=500.<br>
+                May 13: Dr Sales R&amp;A 500; Cr AR 500.<br>
+                AR=9,100; discount 5%=455; Cash=8,645.<br>
+                May 21: Dr Cash 8,645; Dr Sales Discounts 455; Cr AR 9,100.
+              </div>
+            </li>
+
+            <!-- EA12 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA12.</span>
+                Mequon&rsquo;s Boutique: FOB Shipping Point purchase and sale.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                May 10 (FOB Shipping Point, buyer pays freight):<br>
+                Dr Inventory 2,400; Cr Cash 2,400.<br>
+                Dr Inventory 130; Cr Cash 130.<br><br>
+                May 14 (FOB Shipping Point &mdash; customer pays freight):<br>
+                Dr Cash 3,000; Cr Sales 3,000.<br>
+                Dr COGS 1,750; Cr Inventory 1,750.
+              </div>
+            </li>
+
+            <!-- EA13 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA13.</span>
+                Letter Depot: one FOB Destination purchase and one FOB Destination sale.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Mar 9 (FOB Destination &mdash; seller pays freight):<br>
+                Dr Inventory 11,420; Cr AP 11,420.<br>
+                (No freight-in.)<br><br>
+                Mar 20 (FOB Destination &mdash; Letter pays freight-out):<br>
+                Dr AR 7,530; Cr Sales 7,530.<br>
+                Dr COGS 2,860; Cr Inventory 2,860.<br>
+                Dr Delivery Expense 440; Cr Cash 440.
+              </div>
+            </li>
+
+            <!-- EA14 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA14.</span>
+                Nine Lives Inc.: FOB Shipping Point purchase; FOB Destination sale.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Jan 15 (FOB Shipping Point):<br>
+                Dr Inventory 8,770; Cr Cash 8,770.<br>
+                Dr Inventory 345; Cr Cash 345.<br><br>
+                Jan 23 (FOB Destination):<br>
+                Dr Cash 4,520; Cr Sales 4,520.<br>
+                Dr COGS 3,600; Cr Inventory 3,600.<br>
+                Dr Delivery Expense 190; Cr Cash 190.
+              </div>
+            </li>
+
+            <!-- EA15 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA15.</span>
+                Reese Industries &mdash; net sales, simple and multi-step statements, gross margin (structure only).
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span>
+                Net Sales = Sales − Sales Returns &amp; Allowances − Sales Discounts.<br>
+                Simple IS: Total Revenues − Total Expenses = Net Income.<br>
+                Gross Margin = Net Sales − COGS.<br>
+                Multi-step: Net Sales → Gross Profit → Income from Operations → Net Income (after other items).
+              </div>
+            </li>
+
+            <!-- EA16 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA16.</span>
+                Flower Company (periodic) &mdash; purchase, credit purchase, payment with discount.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer (periodic):</span><br>
+                Oct 13: Dr Purchases 1,300; Cr Cash 1,300.<br>
+                Oct 20: Dr Purchases 4,800; Cr AP 4,800.<br>
+                Oct 30: Discount 5%×4,800=240; Cash 4,560.<br>
+                Dr AP 4,800; Cr Purchase Discounts 240; Cr Cash 4,560.
+              </div>
+            </li>
+
+            <!-- EA17 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA17.</span>
+                Apex (periodic) &mdash; purchase, return, pay after discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer (periodic):</span><br>
+                Purchase: Dr Purchases 13,440; Cr AP 13,440.<br>
+                Return 2,800: Dr AP 2,800; Cr Purchase Returns &amp; Allowances 2,800.<br>
+                Remaining AP 10,640; payment: Dr AP 10,640; Cr Cash 10,640.
+              </div>
+            </li>
+
+            <!-- EA18 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA18.</span>
+                Julian Sundries (periodic) &mdash; sale, return, later full payment.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer (periodic &mdash; sales only):</span><br>
+                Sale: 10×870=8,700.<br>
+                Dr AR 8,700; Cr Sales 8,700.<br>
+                Return: 2×870=1,740.<br>
+                Dr Sales R&amp;A 1,740; Cr AR 1,740.<br>
+                Remaining AR 6,960.<br>
+                Payment: Dr Cash 6,960; Cr AR 6,960.
+              </div>
+            </li>
+
+            <!-- EA19 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EA19.</span>
+                Glow (periodic) &mdash; sale, allowance, payment with discount.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer (periodic &mdash; sales only):</span><br>
+                Sale: 240×40=9,600.<br>
+                May 9: Dr AR 9,600; Cr Sales 9,600.<br>
+                Allowance: 50×10=500.<br>
+                May 13: Dr Sales R&amp;A 500; Cr AR 500.<br>
+                AR=9,100; discount 5%=455; Cash=8,645.<br>
+                May 21: Dr Cash 8,645; Dr Sales Discounts 455; Cr AR 9,100.
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </section>
+
+      <!-- EXERCISE SET B TAB -->
+      <section id="tab-eb" class="tab-panel">
+        <div class="card-section">
+          <div class="card-section-header">
+            <h2>Exercise Set B (EB 1&ndash;15)</h2>
+            <p>Deeper drills on discounts, freight, and full income statement builds.</p>
+          </div>
+          <ul class="qa-list">
+
+            <!-- EB1 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB1.</span>
+                Lupita Candy Supplies sells 1,250 buckets at $10 (cost $2), terms 2/10, n/60. Record sale and payment on July 12.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sale: 1,250×10=12,500; cost 1,250×2=2,500.<br>
+                June 1: Dr AR 12,500; Cr Sales 12,500. Dr COGS 2,500; Cr Inventory 2,500.<br>
+                July 12 (after discount window): Dr Cash 12,500; Cr AR 12,500.
+              </div>
+            </li>
+
+            <!-- EB2 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB2.</span>
+                Ariel buys 32 phones at $400, terms 3/5, n/30, pays Nov 6.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase 12,800.<br>
+                Nov 3: Dr Inventory 12,800; Cr AP 12,800.<br>
+                Discount 3%×12,800=384; Cash 12,416.<br>
+                Nov 6: Dr AP 12,800; Cr Inventory 384; Cr Cash 12,416.
+              </div>
+            </li>
+
+            <!-- EB3 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB3.</span>
+                Fill in account blanks for purchase/sales flows.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase on credit: Dr Merchandise Inventory; Cr Accounts Payable.<br>
+                Payment within discount (perpetual): Dr Accounts Payable; Cr Cash and Merchandise Inventory.<br>
+                Return before payment: Dr Sales Returns and Allowances; Cr Accounts Receivable.<br>
+                Customer pays with discount: Dr Cash and Sales Discounts; Cr Accounts Receivable.
+              </div>
+            </li>
+
+            <!-- EB4 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB4.</span>
+                Orange Industries: compute net purchases and COGS for June.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Net Purchases = 435,080 − 50,932 − 14,664 = 369,484.<br>
+                COG Available = 321,908 + 369,484 = 691,392.<br>
+                COGS = 691,392 − 254,075 = 437,317.
+              </div>
+            </li>
+
+            <!-- EB5 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB5.</span>
+                Barrio Bikes buys 30 bikes at $100, terms 4/10, n/30; pays April 26. Perpetual vs periodic entries.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase=3,000; discount 4%=120; cash 2,880.<br><br>
+                Perpetual:<br>
+                Apr 20: Dr Inventory 3,000; Cr AP 3,000.<br>
+                Apr 26: Dr AP 3,000; Cr Inventory 120; Cr Cash 2,880.<br><br>
+                Periodic:<br>
+                Apr 20: Dr Purchases 3,000; Cr AP 3,000.<br>
+                Apr 26: Dr AP 3,000; Cr Purchase Discounts 120; Cr Cash 2,880.
+              </div>
+            </li>
+
+            <!-- EB6 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB6.</span>
+                Blue Barns buys 888 gallons at $19 (2/15, n/45); pays June 20; returns 20 gallons June 22 for cash.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase=888×19=16,872.<br>
+                June 3: Dr Inventory 16,872; Cr AP 16,872.<br>
+                June 20 (no discount): Dr AP 16,872; Cr Cash 16,872.<br>
+                Return: 20×19=380.<br>
+                June 22: Dr Cash 380; Cr Inventory 380.
+              </div>
+            </li>
+
+            <!-- EB7 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB7.</span>
+                Canary buys 300 parts at 3.50 (4/10, n/25), pays Dec 16, then gets allowance on 34 parts after payment.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase 1,050.<br>
+                Dec 4: Dr Inventory 1,050; Cr AP 1,050.<br>
+                Dec 16 (no discount): Dr AP 1,050; Cr Cash 1,050.<br>
+                Allowance: 34×1=34.<br>
+                Dec 21: Dr Cash 34; Cr Inventory 34.
+              </div>
+            </li>
+
+            <!-- EB8 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB8.</span>
+                Balloon Depot purchases 3,000 bundles, returns 450, then pays within discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Purchase 3,000×25=75,000.<br>
+                Feb 8: Dr Inventory 75,000; Cr AP 75,000.<br>
+                Return: 450×25=11,250.<br>
+                Feb 11: Dr AP 11,250; Cr Inventory 11,250.<br>
+                Remaining AP=63,750; discount 10%=6,375; Cash=57,375.<br>
+                Feb 18: Dr AP 63,750; Cr Inventory 6,375; Cr Cash 57,375.
+              </div>
+            </li>
+
+            <!-- EB9 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB9.</span>
+                Blue Barns sells 136 gallons at $31 (cost 19), gets paid, then later takes a return for cash.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sale: 136×31=4,216; cost 136×19=2,584.<br>
+                July 6: Dr AR 4,216; Cr Sales 4,216. Dr COGS 2,584; Cr Inventory 2,584.<br>
+                July 24: Dr Cash 4,216; Cr AR 4,216.<br>
+                Return: 17×31=527; cost 17×19=323.<br>
+                July 28: Dr Sales R&amp;A 527; Cr Cash 527. Dr Inventory 323; Cr COGS 323.
+              </div>
+            </li>
+
+            <!-- EB10 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB10.</span>
+                Canary sells 70 parts at $5 (cost 3), gets paid, then gives a later allowance on 22 parts.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sale 350; cost 210; allowance 22.<br>
+                Dec 4: Dr AR 350; Cr Sales 350. Dr COGS 210; Cr Inventory 210.<br>
+                Dec 16: Dr Cash 350; Cr AR 350.<br>
+                Dec 21: Dr Sales R&amp;A 22; Cr Cash 22.
+              </div>
+            </li>
+
+            <!-- EB11 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB11.</span>
+                Balloon Depot sells 570 bundles at $38 (cost 25), customer returns 70, then pays within discount window.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Sale 21,660; cost 14,250.<br>
+                Mar 8: Dr AR 21,660; Cr Sales 21,660. Dr COGS 14,250; Cr Inventory 14,250.<br>
+                Return 2,660; cost 1,750.<br>
+                Mar 11: Dr Sales R&amp;A 2,660; Cr AR 2,660. Dr Inventory 1,750; Cr COGS 1,750.<br>
+                AR=19,000; discount 3%=570; Cash=18,430.<br>
+                Mar 18: Dr Cash 18,430; Dr Sales Discounts 570; Cr AR 19,000.
+              </div>
+            </li>
+
+            <!-- EB12 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB12.</span>
+                Lumber Farm &mdash; FOB Destination purchase and FOB Destination sale.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Feb 13: Dr Inventory 9,650; Cr Cash 9,650. (Seller pays freight.)<br>
+                Feb 19: Dr Cash 5,670; Cr Sales 5,670. Dr COGS 2,200; Cr Inventory 2,200. Dr Delivery Expense 230; Cr Cash 230.
+              </div>
+            </li>
+
+            <!-- EB13 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB13.</span>
+                Clubs Unlimited &mdash; FOB Shipping Point purchase and sale.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Jun 12: Dr Inventory 3,540; Cr AP 3,540. Dr Inventory 150; Cr Cash 150.<br>
+                Jun 18: Dr AR 8,200; Cr Sales 8,200. Dr COGS 3,280; Cr Inventory 3,280.
+              </div>
+            </li>
+
+            <!-- EB14 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB14.</span>
+                Wall World &mdash; FOB Shipping Point purchase; FOB Destination sale.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Dec 6: Dr Inventory 5,510; Cr AP 5,510. Dr Inventory 146; Cr Cash 146.<br>
+                Dec 10: Dr AR 3,590; Cr Sales 3,590. Dr COGS 1,400; Cr Inventory 1,400. Dr Delivery Expense 115; Cr Cash 115.
+              </div>
+            </li>
+
+            <!-- EB15 -->
+            <li class="qa-item">
+              <div class="q-text">
+                <span class="q-label">EB15.</span>
+                Carnival Express &mdash; net sales, simple IS, gross margin, and multi-step IS.
+              </div>
+              <div class="a-text">
+                <span class="a-label">Answer:</span><br>
+                Net Sales = 790,866 − 100,043 − 62,750 = 628,073.<br>
+                Total Revenues = Net Sales + Rent Rev + Interest Rev = 628,073 + 42,900 + 12,321 = 683,294.<br>
+                Total Expenses = COGS 295,840 + all operating + interest exp 5,444 = 427,884.<br>
+                Net Income = 683,294 − 427,884 = 255,410.<br>
+                Gross Margin = 628,073 − 295,840 = 332,233.<br>
+                Multi-step: Gross Profit 332,233; Operating Expenses 126,600 → Income from Operations 205,633; Net Other Income 49,777 → Net Income 255,410.
+              </div>
+            </li>
+
+          </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+        btn.classList.add('active');
+        const panel = document.querySelector('#tab-' + target);
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    // Flashcard toggle
+    document.querySelectorAll('.flashcard').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('show-answer');
+      });
+    });
+  </script>
+</body>
+</html>
